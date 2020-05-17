@@ -27,23 +27,8 @@
               <div class='datepicker-wrapper datepicker-date'><?php echo html::input('end', $end, "class='form-control' style='padding-right:10px' onchange='changeParams(this)'");?></div>
             </div>
           </div>
-          <div class='col-sm-2'>
-            <div class='input-group'>
-              <span class='input-group-addon'><?php echo $lang->report->diffDays;?></span>
-              <?php echo html::input('days', $days, "class='form-control' style='text-align:center'");?>
-            </div>
-          </div>
           <div class='col-sm-4'>
             <div class="row">
-              <div class="col-sm-5">
-                <div class='input-group'>
-                  <span class='input-group-addon'><?php echo $lang->report->workday;?></span>
-                  <?php echo html::input('workday', $workday, "class='form-control'");?>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <?php echo html::select('assign', $lang->report->assign, $assign, "class='form-control' onchange='changeParams(this)'");?>
-              </div>
               <div class="col-sm-3">
                 <?php echo html::submitButton($lang->report->query, '', 'btn btn-primary btn-block');?>
               </div>
@@ -62,6 +47,7 @@
     <div class='cell'>
       <div class='panel'>
         <div class="panel-heading">
+          <!-- <div class="panel-title"><?php echo json_encode($workload);?></div> -->
           <div class="panel-title"><?php echo $title;?></div>
           <nav class="panel-actions btn-toolbar"></nav>
         </div>
@@ -71,36 +57,37 @@
               <tr class='colhead text-center'>
                 <th class="w-100px"><?php echo $lang->report->user;?></th>
                 <th><?php echo $lang->report->project;?></th>
-                <th class="w-100px"><?php echo $lang->report->task;?></th>
-                <th class="w-100px"><?php echo $lang->report->remain;?></th>
-                <th class="w-100px"><?php echo $lang->report->taskTotal;?></th>
+                <th class="w-100px"><?php echo $lang->report->upReportHour;?></th>
                 <th class="w-100px"><?php echo $lang->report->manhourTotal;?></th>
-                <th class="w-100px"><?php echo $lang->report->workloadAB;?></th>
               </tr>
             </thead>
             <tbody>
               <?php $color = false;?>
-              <?php foreach($workload as $account => $load):?>
-              <?php if(!isset($users[$account])) continue;?>
-              <tr class="text-center">
-                <td rowspan="<?php echo count($load['task']);?>"><?php echo $users[$account];?></td>
-                <?php $id = 1;?>
-                <?php foreach($load['task'] as $project => $info):?>
-                <?php $class = $color ? 'rowcolor' : '';?>
-                <?php if($id != 1) echo '<tr class="text-center">';?>
-                <td title='<?php echo $project?>' class="<?php echo $class;?> text-left"><?php echo html::a($this->createLink('project', 'view', "projectID={$info['projectID']}"), $project);?></td>
-                <td class="<?php echo $class;?>"><?php echo $info['count'];?></td>
-                <td class="<?php echo $class;?>"><?php echo $info['manhour'];?></td>
-                <?php if($id == 1):?>
-                <td rowspan="<?php echo count($load['task']);?>"><?php echo $load['total']['count'];?></td>
-                <td rowspan="<?php echo count($load['task']);?>"><?php echo $load['total']['manhour'];?></td>
-                <td rowspan="<?php echo count($load['task']);?>"><?php echo round($load['total']['manhour'] / $allHour * 100, 2) . '%';?></td>
-                <?php endif;?>
-                <?php if($id != 1) echo '</tr>'; $id ++;?>
-                <?php $color = !$color;?>
-                <?php endforeach;?>
-              </tr>
-            <?php endforeach;?>
+                <?php foreach($workload as $account => $load):?>
+                <?php if(!isset($users[$account])) continue;?>
+                <tr class="text-center">
+                  <td rowspan="<?php echo count($load['projects']);?>"><?php echo $users[$account];?></td>
+                  <?php $id = 1;?>
+                  <?php foreach($load['projects'] as $project => $info):?>
+                  <?php $class = $color ? 'rowcolor' : '';?>
+                  <?php if($id != 1) echo '<tr class="text-center">';?>
+                  <td title='<?php echo $info['projectName']?>' class="<?php echo $class;?> text-left">
+                    <?php if($project == 'no_project'):?>
+                      <?php echo $info['projectName'];?>
+                    <?php endif;?>
+                    <?php if($project != 'no_project'):?>
+                      <?php echo html::a($this->createLink('project', 'view', "projectID={$project}"), $info['projectName']);?>
+                    <?php endif;?>
+                  </td>
+                  <td class="<?php echo $class;?>"><?php echo $info['consumed'];?></td>
+                  <?php if($id == 1):?>
+                  <td rowspan="<?php echo count($load['projects']);?>"><?php echo $load['totalConsumed'];?></td>
+                  <?php endif;?>
+                  <?php if($id != 1) echo '</tr>'; $id ++;?>
+                  <?php $color = !$color;?>
+                  <?php endforeach;?>
+                </tr>
+              <?php endforeach;?>
             </tbody>
           </table>
         </div>

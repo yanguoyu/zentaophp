@@ -41,6 +41,7 @@ $lang->report->productSummary   = $lang->productCommon . '汇总表';
 $lang->report->bugCreate        = 'Bug创建表';
 $lang->report->bugAssign        = 'Bug指派表';
 $lang->report->workload         = '员工负载表';
+$lang->report->workhour         = '员工工时表';
 $lang->report->workloadAB       = '工作负载';
 $lang->report->bugOpenedDate    = 'Bug创建时间';
 $lang->report->beginAndEnd      = '起止时间';
@@ -52,6 +53,7 @@ $lang->reportList->product->lists[10] = $lang->productCommon . '汇总表|report
 $lang->reportList->test->lists[10]    = 'Bug创建表|report|bugcreate';
 $lang->reportList->test->lists[13]    = 'Bug指派表|report|bugassign';
 $lang->reportList->staff->lists[10]   = '员工负载表|report|workload';
+$lang->reportList->staff->lists[11]   = '员工工时表|report|workhour';
 
 $lang->report->id            = '编号';
 $lang->report->project       = $lang->projectCommon;
@@ -73,6 +75,8 @@ $lang->report->validRateTips = "方案为已解决或延期/状态为已解决�
 $lang->report->unplanned     = '未计划';
 $lang->report->workday       = '每天工时';
 $lang->report->diffDays      = '工作日天数';
+$lang->report->upReportHour  = '填报工时';
+$lang->report->noTask        = '无参与任务';
 
 $lang->report->typeList['default'] = '默认';
 $lang->report->typeList['pie']     = '饼图';

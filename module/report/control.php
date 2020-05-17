@@ -173,6 +173,51 @@ class report extends control
     }
 
     /**
+     * Workload report.
+     *
+     * @param string $begin
+     * @param string $end
+     * @param int    $days
+     * @param int    $workday
+     * @param int    $dept
+     * @param int    $assign
+     *
+     * @access public
+     * @return void
+     */
+    public function workhour($begin = '', $end = '', $dept = 0)
+    {
+        if($_POST)
+        {
+            $data    = fixer::input('post')->get();
+            $begin   = $data->begin;
+            $end     = $data->end;
+            $dept    = $data->dept;
+        }
+
+        $beginWeekDay = date('w') === 0 ? 7 : date('w');
+
+        $this->app->loadConfig('project');
+        $begin  = $begin ? strtotime($begin) : time() - (($beginWeekDay - 1) * 24 * 3600);
+        $end    = $end   ? strtotime($end)   : time();
+        $begin  = date('Y-m-d', $begin);
+        $end    = date('Y-m-d', $end);
+
+
+        $this->view->title      = $this->lang->report->workhour;
+        $this->view->position[] = $this->lang->report->workload;
+
+        $this->view->workload = $this->report->getWorkHour($dept, $begin, $end);
+        $this->view->users    = $this->loadModel('user')->getPairs('noletter|noclosed|nodeleted');
+        $this->view->depts    = $this->loadModel('dept')->getOptionMenu();
+        $this->view->begin    = $begin;
+        $this->view->end      = date('Y-m-d', strtotime($end));
+        $this->view->dept     = $dept;
+        $this->view->submenu  = 'staff';
+        $this->display();
+    }
+
+    /**
      * Send daily reminder mail.
      *
      * @access public

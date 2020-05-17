@@ -364,6 +364,79 @@ class reportModel extends model
     }
 
     /**
+     * Get workhour.
+     *
+     * @param int    $dept
+     * @param string $assign
+     *
+     * @access public
+     * @return array
+     */
+    public function getWorkHour($dept = 0, $begin, $end)
+    {
+        $deptUsers = array();
+        if($dept) $deptUsers = $this->loadModel('dept')->getDeptUserPairs($dept);
+        $hasUpReportTasks = $this->dao->select('t1.account, t1.consumed, t2.project as project, t3.name as projectName')
+            ->from(TABLE_TASKESTIMATE)->alias('t1')
+            ->leftJoin(TABLE_TASK)->alias('t2')->on('t2.id = t1.task')
+            ->leftJoin(TABLE_PROJECT)->alias('t3')->on('t3.id = t2.project')
+            ->where('t1.date') ->ge($begin)
+            ->andWhere('t1.date') -> le($end)
+            ->beginIF($dept)->andWhere('t1.account')->in(array_keys($deptUsers))->fi()
+            ->fetchAll();
+        $isDoingTasks = $this->dao->select('t1.project, t2.name as projectName, t1.assignedTo as account, (0) as consumed')
+            ->from(TABLE_TASK)->alias('t1')
+            ->leftJoin(TABLE_PROJECT)->alias('t2')->on('t2.id = t1.project')
+            ->where('t1.deleted') -> eq(0)
+            ->andWhere('t1.status') -> eq('doing')
+            ->beginIF($dept)->andWhere('t1.assignedTo')->in(array_keys($deptUsers))->fi()
+            ->fetchAll();
+        $accounts = $this->dao->select('id, account')
+            ->from(TABLE_USER)
+            ->where('dept')->ne('0')
+            ->beginIF($dept)->andWhere('account')->in(array_keys($deptUsers))->fi()
+            ->orderBy('dept, account')
+            ->fetchAll();
+        $workloadtmp = [];
+        foreach ($accounts as $val) {    //数据分组
+            $workloadtmp[$val->account][] = $val;
+        }
+        foreach ($hasUpReportTasks as $k => $val) {    //数据分组
+            $workloadtmp[$val->account][] = $val;
+        }
+        foreach ($isDoingTasks as $k => $val) {    //数据分组
+            $workloadtmp[$val->account][] = $val;
+        }
+        $workload = [];
+        foreach ($workloadtmp as $k => $val) {
+            $workload[$k]['account'] = $k;
+            $workload[$k]['totalConsumed'] = 0;
+            $workload[$k]['projects'] = array();
+            foreach ($val as $task) {
+                if ($task->project !== null) {
+                    if(!isset($workload[$k]['projects'][$task->project])) {
+                        $workload[$k]['projects'][$task->project]['project'] = $task->project;
+                        $workload[$k]['projects'][$task->project]['consumed'] = $task->consumed;
+                        $workload[$k]['projects'][$task->project]['projectName'] = $task->projectName;
+                    } else {
+                        $workload[$k]['projects'][$task->project]['consumed'] += $task->consumed;
+                    }
+                    $workload[$k]['totalConsumed'] += $task->consumed;
+                }
+            }
+            if (count($workload[$k]['projects']) === 0) {
+                $workload[$k]['projects']['no_project']['project'] = 'no_project';
+                $workload[$k]['projects']['no_project']['consumed'] = 0;
+                $workload[$k]['projects']['no_project']['projectName'] = $this->lang->report->noTask;
+            }
+            else {
+                asort($workload[$k]['projects']);
+            }
+        }
+        return $workload;
+    }
+
+    /**
      * Get bug assign.
      *
      * @access public
