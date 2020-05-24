@@ -195,7 +195,7 @@ class report extends control
             $dept    = $data->dept;
         }
 
-        $beginWeekDay = date('w') === 0 ? 7 : date('w');
+        $beginWeekDay = date('w') == 0 ? 7 : date('w');
 
         $this->app->loadConfig('project');
         $begin  = $begin ? strtotime($begin) : time() - (($beginWeekDay - 1) * 24 * 3600);
