@@ -717,6 +717,7 @@ class projectModel extends model
     {
         if($status == 'involved') return $this->getInvolvedList($status, $limit, $productID, $branch);
 
+        $today = helper::today();
         if($productID != 0)
         {
             return $this->dao->select('t2.*')->from(TABLE_PROJECTPRODUCT)->alias('t1')
@@ -724,9 +725,11 @@ class projectModel extends model
                 ->where('t1.product')->eq($productID)
                 ->andWhere('t2.deleted')->eq(0)
                 ->andWhere('t2.iscat')->eq(0)
+                ->beginIF($status == 'delayed')->andWhere('t2.end')->lt($today)->fi()
+                ->beginIF($status == 'delayed')->andWhere('t2.status')->notIN('done,closed,suspended')->fi()
                 ->beginIF($status == 'undone')->andWhere('t2.status')->notIN('done,closed')->fi()
                 ->beginIF($branch)->andWhere('t1.branch')->eq($branch)->fi()
-                ->beginIF($status != 'all' and $status != 'undone')->andWhere('status')->in($status)->fi()
+                ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed')->andWhere('status')->in($status)->fi()
                 ->beginIF(!$this->app->user->admin)->andWhere('t2.id')->in($this->app->user->view->projects)->fi()
                 ->orderBy('order_desc')
                 ->beginIF($limit)->limit($limit)->fi()
@@ -736,7 +739,9 @@ class projectModel extends model
         {
             return $this->dao->select('*, IF(INSTR(" done,closed", status) < 2, 0, 1) AS isDone')->from(TABLE_PROJECT)->where('iscat')->eq(0)
                 ->beginIF($status == 'undone')->andWhere('status')->notIN('done,closed')->fi()
-                ->beginIF($status != 'all' and $status != 'undone')->andWhere('status')->in($status)->fi()
+                ->beginIF($status == 'delayed')->andWhere('end')->lt($today)->fi()
+                ->beginIF($status == 'delayed')->andWhere('status')->notIN('done,closed,suspended')->fi()
+                ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed')->andWhere('status')->in($status)->fi()
                 ->beginIF(!$this->app->user->admin)->andWhere('id')->in($this->app->user->view->projects)->fi()
                 ->andWhere('deleted')->eq(0)
                 ->orderBy('order_desc')
