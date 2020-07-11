@@ -1099,8 +1099,21 @@ class block extends control
         $projects = $this->loadModel('project')->getList();
 
         $total = 0;
+        $today = helper::today();
         foreach($projects as $project)
         {
+            if ($project->end < $today
+            && $project->status !== 'done'
+            && $project->status !== 'closed'
+            && $project->status !== 'suspended'
+            ) {
+                $project->status = 'delayed';
+            }
+        }
+
+        foreach($projects as $project)
+        {
+            $projectsOutput[$project->status] = $project->status;
             if(!isset($overview[$project->status])) $overview[$project->status] = 0;
             $overview[$project->status]++;
             $total++;
