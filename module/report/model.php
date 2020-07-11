@@ -382,6 +382,7 @@ class reportModel extends model
             ->leftJoin(TABLE_PROJECT)->alias('t3')->on('t3.id = t2.project')
             ->where('t1.date') ->ge($begin)
             ->andWhere('t1.date') -> le($end)
+            ->andWhere('t2.deleted') -> eq(0)
             ->beginIF($dept)->andWhere('t1.account')->in(array_keys($deptUsers))->fi()
             ->fetchAll();
         $isDoingTasks = $this->dao->select('t1.project, t2.name as projectName, t1.assignedTo as account, (0) as consumed')
