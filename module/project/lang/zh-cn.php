@@ -58,6 +58,7 @@ $lang->project->viewBug       = '查看bug';
 $lang->project->noProduct     = "无{$lang->productCommon}{$lang->projectCommon}";
 $lang->project->createStory   = "添加{$lang->storyCommon}";
 $lang->project->all           = '所有';
+$lang->project->noconfirm     = '待沟通';
 $lang->project->undone        = '未完成';
 $lang->project->unclosed      = '未关闭';
 $lang->project->typeDesc      = "运维{$lang->projectCommon}没有{$lang->storyCommon}、bug、版本、测试功能，同时禁用燃尽图。";
@@ -74,6 +75,7 @@ $lang->project->watermark     = '由禅道导出';
 $lang->project->viewByUser    = '按用户查看';
 
 $lang->project->start    = "开始";
+$lang->project->confirm  = "确认沟通";
 $lang->project->activate = "激活";
 $lang->project->putoff   = "延期";
 $lang->project->suspend  = "挂起";
@@ -108,6 +110,7 @@ $lang->project->basicInfo = '基本信息';
 $lang->project->otherInfo = '其他信息';
 
 /* 字段取值列表。*/
+$lang->project->statusList['noconfirm'] = $lang->project->noconfirm;
 $lang->project->statusList['wait']      = '未开始';
 $lang->project->statusList['doing']     = '进行中';
 $lang->project->statusList['suspended'] = '已挂起';
@@ -143,6 +146,7 @@ $lang->project->unlinkStoryTasks  = "未关联{$lang->storyCommon}任务";
 $lang->project->linkedProducts    = '已关联';
 $lang->project->unlinkedProducts  = '未关联';
 $lang->project->view              = "{$lang->projectCommon}概况";
+$lang->project->confirmAction     = "确认{$lang->projectCommon}";
 $lang->project->startAction       = "开始{$lang->projectCommon}";
 $lang->project->activateAction    = "激活{$lang->projectCommon}";
 $lang->project->delayAction       = "延期{$lang->projectCommon}";
@@ -343,6 +347,7 @@ $lang->project->featureBar['task']['status']       = $lang->project->statusSelec
 
 $lang->project->featureBar['all']['all']       = $lang->project->all;
 $lang->project->featureBar['all']['undone']    = $lang->project->undone;
+$lang->project->featureBar['all']['noconfirm'] = $lang->project->noconfirm;
 $lang->project->featureBar['all']['wait']      = $lang->project->statusList['wait'];
 $lang->project->featureBar['all']['doing']     = $lang->project->statusList['doing'];
 $lang->project->featureBar['all']['suspended'] = $lang->project->statusList['suspended'];

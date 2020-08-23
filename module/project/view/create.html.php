@@ -86,7 +86,7 @@
         <?php endif;?>
         <tr class='hide'>
           <th><?php echo $lang->project->status;?></th>
-          <td><?php echo html::hidden('status', 'wait');?></td>
+          <td><?php echo html::hidden('status', 'noconfirm');?></td>
           <td></td>
           <td></td>
         </tr>

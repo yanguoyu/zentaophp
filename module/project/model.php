@@ -269,7 +269,7 @@ class projectModel extends model
     {
         $this->lang->project->team = $this->lang->project->teamname;
         $project = fixer::input('post')
-            ->setDefault('status', 'wait')
+            ->setDefault('status', 'noconfirm')
             ->setIF($this->post->acl != 'custom', 'whitelist', '')
             ->setDefault('openedBy', $this->app->user->account)
             ->setDefault('openedDate', helper::now())
@@ -491,6 +491,46 @@ class projectModel extends model
         }
         $this->fixOrder();
         return $allChanges;
+    }
+
+    /**
+     * Confirm project.
+     *
+     * @param  int    $projectID
+     * @access public
+     * @return void
+     */
+    public function confirm($projectID)
+    {
+        $oldProject = $this->getById($projectID);
+        $now        = helper::now();
+        $project = fixer::input('post')
+            ->setDefault('status', 'wait')
+            ->remove('comment')->get();
+
+        $this->dao->update(TABLE_PROJECT)->data($project)
+            ->autoCheck()
+            ->where('id')->eq((int)$projectID)
+            ->exec();
+        foreach($project as $fieldName => $value)
+        {
+            if($fieldName == 'PO' or $fieldName == 'PM' or $fieldName == 'QD' or $fieldName == 'RD' )
+            {
+                if(!empty($value) and !isset($team[$value]))
+                {
+                    $member = new stdclass();
+                    $member->root    = (int)$projectID;
+                    $member->account = $value;
+                    $member->join    = helper::today();
+                    $member->role    = $this->lang->project->$fieldName;
+                    $member->days    = $project->days;
+                    $member->type    = 'project';
+                    $member->hours   = $this->config->project->defaultWorkhours;
+                    $this->dao->replace(TABLE_TEAM)->data($member)->exec();
+                }
+            }
+        }
+        if(!dao::isError()) return common::createChanges($oldProject, $project);
     }
 
     /**

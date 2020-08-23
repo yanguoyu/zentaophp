@@ -1304,6 +1304,44 @@ class project extends control
         $this->display();
     }
 
+
+    /**
+     * Confirm project.
+     *
+     * @param  int    $projectID
+     * @access public
+     * @return void
+     */
+    public function confirm($projectID)
+    {
+        $project   = $this->commonAction($projectID);
+        $projectID = $project->id;
+
+        if(!empty($_POST))
+        {
+            $this->loadModel('action');
+            $changes = $this->project->confirm($projectID);
+            if(dao::isError()) die(js::error(dao::getError()));
+
+            if($this->post->comment != '' or !empty($changes))
+            {
+                $actionID = $this->action->create('project', $projectID, 'Started', $this->post->comment);
+                $this->action->logHistory($actionID, $changes);
+            }
+            $this->executeHooks($projectID);
+            die(js::reload('parent.parent'));
+        }
+
+        $this->view->title      = $this->view->project->name . $this->lang->colon .$this->lang->project->start;
+        $this->view->position[] = html::a($this->createLink('project', 'browse', "projectID=$projectID"), $this->view->project->name);
+        $this->view->position[] = $this->lang->project->start;
+        $this->view->users      = $this->loadModel('user')->getPairs('noletter');
+        $this->view->pmUsers    = $this->user->getPairs('noclosed|nodeleted|pmfirst',  $project->PM);
+        $this->view->actions    = $this->loadModel('action')->getList('project', $projectID);
+        $this->display();
+    }
+
+
     /**
      * Start project.
      *
