@@ -2570,23 +2570,24 @@ class taskModel extends model
     {
         $action = strtolower($action);
 
-        if($action == 'start'          and !empty($task->children)) return false;
-        if($action == 'finish'         and !empty($task->children)) return false;
-        if($action == 'pause'          and !empty($task->children)) return false;
+        if($action == 'start'          and !empty($task->children)) return $task->isProjectStart;
+        if($action == 'finish'         and !empty($task->children)) return $task->isProjectStart;
+        if($action == 'pause'          and !empty($task->children)) return $task->isProjectStart;
         if($action == 'assignto'       and !empty($task->children)) return false;
-        if($action == 'close'          and !empty($task->children)) return false;
+        if($action == 'close'          and !empty($task->children)) return $task->isProjectStart;
         if($action == 'batchcreate'    and !empty($task->team))     return false;
         if($action == 'batchcreate'    and $task->parent > 0)       return false;
         if($action == 'recordestimate' and $task->parent == -1)     return false;
         if($action == 'delete'         and $task->parent < 0)       return false;
 
-        if($action == 'start')    return $task->status == 'wait';
-        if($action == 'restart')  return $task->status == 'pause';
-        if($action == 'pause')    return $task->status == 'doing';
+        if($action == 'start')    return $task->status == 'wait' and $task->isProjectStart;
+        if($action == 'restart')  return $task->status == 'pause' and $task->isProjectStart;
+        if($action == 'pause')    return $task->status == 'doing' and $task->isProjectStart;
+        if($action == 'recordestimate')    return $task->isProjectStart;
         if($action == 'assignto') return $task->status != 'closed' and $task->status != 'cancel';
-        if($action == 'close')    return $task->status == 'done'   or  $task->status == 'cancel';
+        if($action == 'close')    return ($task->status == 'done'   or  $task->status == 'cancel') and $task->isProjectStart;
         if($action == 'activate') return $task->status == 'done'   or  $task->status == 'closed'  or $task->status  == 'cancel';
-        if($action == 'finish')   return $task->status != 'done'   and $task->status != 'closed'  and $task->status != 'cancel';
+        if($action == 'finish')   return $task->status != 'done'   and $task->status != 'closed'  and $task->status != 'cancel' and $task->isProjectStart;
         if($action == 'cancel')   return $task->status != 'done'   and $task->status != 'closed'  and $task->status != 'cancel';
 
         return true;
@@ -2635,7 +2636,7 @@ class taskModel extends model
      * @access public
      * @return void
      */
-    public function printCell($col, $task, $users, $browseType, $branchGroups, $modulePairs = array(), $mode = 'datatable', $child = false)
+    public function printCell($col, $task, $users, $browseType, $branchGroups, $modulePairs = array(), $mode = 'datatable', $child = false, $projectStart = true)
     {
         $canBatchEdit         = common::hasPriv('task', 'batchEdit', !empty($task) ? $task : null);
         $canBatchClose        = (common::hasPriv('task', 'batchClose', !empty($task) ? $task : null) && strtolower($browseType) != 'closedBy');
@@ -2792,6 +2793,7 @@ class taskModel extends model
                     break;
                 }
 
+                $task->isProjectStart = $projectStart;
                 if($task->status != 'pause') common::printIcon('task', 'start', "taskID=$task->id", $task, 'list', '', '', 'iframe', true);
                 if($task->status == 'pause') common::printIcon('task', 'restart', "taskID=$task->id", $task, 'list', '', '', 'iframe', true);
                 common::printIcon('task', 'close',  "taskID=$task->id", $task, 'list', '', '', 'iframe', true);
