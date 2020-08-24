@@ -1325,7 +1325,7 @@ class project extends control
 
             if($this->post->comment != '' or !empty($changes))
             {
-                $actionID = $this->action->create('project', $projectID, 'Started', $this->post->comment);
+                $actionID = $this->action->create('project', $projectID, 'confirm', $this->post->comment);
                 $this->action->logHistory($actionID, $changes);
             }
             $this->executeHooks($projectID);
