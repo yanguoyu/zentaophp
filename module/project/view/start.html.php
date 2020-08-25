@@ -12,6 +12,7 @@
 ?>
 <?php include '../../common/view/header.html.php';?>
 <?php include '../../common/view/kindeditor.html.php';?>
+<?php js::import($jsRoot . 'misc/date.js');?>
 <div id='mainContent' class='main-content'>
   <div class='main-header'>
     <h2>
@@ -27,11 +28,30 @@
       <tbody>
         <?php $this->printExtendFields($project, 'table', 'columns=2');?>
         <tr>
-          <th class='w-40px'><?php echo $lang->comment;?></th>
-          <td><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+          <th class='w-80px'><?php echo $lang->project->dateRange;?></th>
+          <td colspan='2'>
+            <div class='input-group'>
+              <?php echo html::input('begin', $project->begin, "class='form-control form-date' onchange='computeWorkDays()' placeholder='" . $lang->project->begin . "'");?>
+              <span class='input-group-addon'><?php echo $lang->project->to;?></span>
+              <?php echo html::input('end', $project->end, "class='form-control form-date' onchange='computeWorkDays()' placeholder='" . $lang->project->end . "'");?>
+              <div class='input-group-btn'>
+                <button type='button' class='btn dropdown-toggle' data-toggle='dropdown'><?php echo $lang->project->byPeriod;?> <span class='caret'></span></button>
+                <ul class='dropdown-menu'>
+                  <?php foreach ($lang->project->endList as $key => $name):?>
+                  <li><a href='javascript:computeEndDate("<?php echo $key;?>")'><?php echo $name;?></a></li>
+                  <?php endforeach;?>
+                </ul>
+              </div>
+            </div>
+          </td>
+          <td class='w-100px'></td>
         </tr>
         <tr>
-          <td colspan='2' class='text-center form-actions'><?php echo html::submitButton($lang->project->start) . ' ' .  html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>
+          <th><?php echo $lang->comment;?></th>
+          <td colspan='3'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+        </tr>
+        <tr>
+          <td colspan='4' class='text-center form-actions'><?php echo html::submitButton($lang->project->start) . ' ' .  html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>
         </tr>
       </tbody>
     </table>

@@ -94,6 +94,7 @@ $lang->action->desc->common         = '$date, <strong>$action</strong> by <stron
 $lang->action->desc->extra          = '$date, <strong>$action</strong> as <strong>$extra</strong> by <strong>$actor</strong>。' . "\n";
 $lang->action->desc->opened         = '$date, 由 <strong>$actor</strong> 创建。' . "\n";
 $lang->action->desc->confirm        = '$date, 由 <strong>$actor</strong> 确认沟通。' . "\n";
+$lang->action->desc->changewillend  = '$date, 由 <strong>$actor</strong> 修改了预计完成时间。' . "\n";
 $lang->action->desc->created        = '$date, 由 <strong>$actor</strong> 创建。' . "\n";
 $lang->action->desc->changed        = '$date, 由 <strong>$actor</strong> 变更。' . "\n";
 $lang->action->desc->edited         = '$date, 由 <strong>$actor</strong> 编辑。' . "\n";
@@ -146,6 +147,7 @@ $lang->action->desc->unlinkrelatedcase = '$date, 由 <strong>$actor</strong> 移
 
 /* 用来显示动态信息。*/
 $lang->action->label = new stdclass();
+$lang->action->label->changewillend       = '修改预计完成时间';
 $lang->action->label->confirm             = '确认';
 $lang->action->label->created             = '创建';
 $lang->action->label->opened              = '创建';

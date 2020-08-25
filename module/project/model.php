@@ -280,6 +280,7 @@ class projectModel extends model
             ->remove('products, workDays, delta, branch, uid, plans')
             ->get();
         $project = $this->loadModel('file')->processImgURL($project, $this->config->project->editor->create['id'], $this->post->uid);
+        $project->willEnd = $project->end;
         $this->dao->insert(TABLE_PROJECT)->data($project)
             ->autoCheck($skipFields = 'begin,end')
             ->batchcheck($this->config->project->create->requiredFields, 'notempty')
@@ -530,6 +531,27 @@ class projectModel extends model
                 }
             }
         }
+        if(!dao::isError()) return common::createChanges($oldProject, $project);
+    }
+
+    /**
+     * Confirm project.
+     *
+     * @param  int    $projectID
+     * @access public
+     * @return void
+     */
+    public function changewillend($projectID)
+    {
+        $oldProject = $this->getById($projectID);
+        $now        = helper::now();
+        $project = fixer::input('post')
+            ->remove('comment')->get();
+
+        $this->dao->update(TABLE_PROJECT)->data($project)
+            ->autoCheck()
+            ->where('id')->eq((int)$projectID)
+            ->exec();
         if(!dao::isError()) return common::createChanges($oldProject, $project);
     }
 

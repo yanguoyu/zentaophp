@@ -304,6 +304,7 @@ $lang->resource->project->edit              = 'edit';
 $lang->resource->project->batchedit         = 'batchEdit';
 $lang->resource->project->start             = 'startAction';
 $lang->resource->project->confirm           = 'confirmAction';
+$lang->resource->project->changewillend     = 'changewillendAction';
 $lang->resource->project->activate          = 'activateAction';
 $lang->resource->project->putoff            = 'delayAction';
 $lang->resource->project->suspend           = 'suspendAction';

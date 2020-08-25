@@ -43,6 +43,7 @@
           <th class='thWidth'><?php common::printOrderLink('PM', $orderBy, $vars, $lang->project->PM);?></th>
           <th class='w-90px'><?php common::printOrderLink('begin', $orderBy, $vars, $lang->project->begin);?></th>
           <th class='w-90px'><?php common::printOrderLink('end', $orderBy, $vars, $lang->project->end);?></th>
+          <th class='w-90px'><?php common::printOrderLink('willEnd', $orderBy, $vars, $lang->project->willEnd);?></th>
           <th class='w-90px'><?php common::printOrderLink('status', $orderBy, $vars, $lang->project->status);?></th>
           <th class='w-70px'><?php echo $lang->project->totalEstimate;?></th>
           <th class='w-70px'><?php echo $lang->project->totalConsumed;?></th>
@@ -77,6 +78,7 @@
           <td><?php echo zget($users, $project->PM);?></td>
           <td><?php echo $project->begin;?></td>
           <td><?php echo $project->end;?></td>
+          <td><?php echo $project->willEnd;?></td>
           <?php $projectStatus = $this->processStatus('project', $project);?>
           <td class='c-status' title='<?php echo $projectStatus;?>'>
             <span class="status-project status-<?php echo $project->status?>"><?php echo $projectStatus;?></span>
