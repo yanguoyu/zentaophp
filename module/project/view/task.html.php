@@ -222,7 +222,7 @@ js::set('browseType', $browseType);
         <tbody>
           <?php foreach($tasks as $task):?>
           <tr data-id='<?php echo $task->id;?>' data-status='<?php echo $task->status?>' data-estimate='<?php echo $task->estimate?>' data-consumed='<?php echo $task->consumed?>' data-left='<?php echo $task->left?>'>
-            <?php foreach($customFields as $field) $this->task->printCell($field, $task, $users, $browseType, $branchGroups, $modulePairs, $useDatatable ? 'datatable' : 'table', false, $project->status !== 'wait' and $project->status !== 'noconfirm');?>
+            <?php foreach($customFields as $field) $this->task->printCell($field, $task, $users, $browseType, $branchGroups, $modulePairs, $useDatatable ? 'datatable' : 'table', false, $project->status);?>
           </tr>
           <?php if(!empty($task->children)):?>
           <?php $i = 0;?>

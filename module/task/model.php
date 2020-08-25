@@ -1797,7 +1797,7 @@ class taskModel extends model
     public function getUserTasks($account, $type = 'assignedTo', $limit = 0, $pager = null, $orderBy="id_desc")
     {
         if(!$this->loadModel('common')->checkField(TABLE_TASK, $type)) return array();
-        $tasks = $this->dao->select('t1.*, t2.id as projectID, t2.name as projectName, t3.id as storyID, t3.title as storyTitle, t3.status AS storyStatus, t3.version AS latestStoryVersion')
+        $tasks = $this->dao->select('t1.*, t2.id as projectID, t2.name as projectName, t2.status as projectStatus,t3.id as storyID, t3.title as storyTitle, t3.status AS storyStatus, t3.version AS latestStoryVersion')
             ->from(TABLE_TASK)->alias('t1')
             ->leftjoin(TABLE_PROJECT)->alias('t2')->on('t1.project = t2.id')
             ->leftjoin(TABLE_STORY)->alias('t3')->on('t1.story = t3.id')
@@ -2569,25 +2569,26 @@ class taskModel extends model
     public static function isClickable($task, $action)
     {
         $action = strtolower($action);
+        $isProjectStart = $task->projectStatus !== 'wait' and $task->projectStatus !== 'noconfirm';
 
-        if($action == 'start'          and !empty($task->children)) return $task->isProjectStart;
-        if($action == 'finish'         and !empty($task->children)) return $task->isProjectStart;
-        if($action == 'pause'          and !empty($task->children)) return $task->isProjectStart;
+        if($action == 'start'          and !empty($task->children)) return $isProjectStart;
+        if($action == 'finish'         and !empty($task->children)) return $isProjectStart;
+        if($action == 'pause'          and !empty($task->children)) return $isProjectStart;
         if($action == 'assignto'       and !empty($task->children)) return false;
-        if($action == 'close'          and !empty($task->children)) return $task->isProjectStart;
+        if($action == 'close'          and !empty($task->children)) return $isProjectStart;
         if($action == 'batchcreate'    and !empty($task->team))     return false;
         if($action == 'batchcreate'    and $task->parent > 0)       return false;
         if($action == 'recordestimate' and $task->parent == -1)     return false;
         if($action == 'delete'         and $task->parent < 0)       return false;
 
-        if($action == 'start')    return $task->status == 'wait' and $task->isProjectStart;
-        if($action == 'restart')  return $task->status == 'pause' and $task->isProjectStart;
-        if($action == 'pause')    return $task->status == 'doing' and $task->isProjectStart;
-        if($action == 'recordestimate')    return $task->isProjectStart;
+        if($action == 'start')    return $task->status == 'wait' and $isProjectStart;
+        if($action == 'restart')  return $task->status == 'pause' and $isProjectStart;
+        if($action == 'pause')    return $task->status == 'doing' and $isProjectStart;
+        if($action == 'recordestimate')    return $isProjectStart;
         if($action == 'assignto') return $task->status != 'closed' and $task->status != 'cancel';
-        if($action == 'close')    return ($task->status == 'done'   or  $task->status == 'cancel') and $task->isProjectStart;
+        if($action == 'close')    return ($task->status == 'done'   or  $task->status == 'cancel') and $isProjectStart;
         if($action == 'activate') return $task->status == 'done'   or  $task->status == 'closed'  or $task->status  == 'cancel';
-        if($action == 'finish')   return $task->status != 'done'   and $task->status != 'closed'  and $task->status != 'cancel' and $task->isProjectStart;
+        if($action == 'finish')   return $task->status != 'done'   and $task->status != 'closed'  and $task->status != 'cancel' and $isProjectStart;
         if($action == 'cancel')   return $task->status != 'done'   and $task->status != 'closed'  and $task->status != 'cancel';
 
         return true;
@@ -2636,7 +2637,7 @@ class taskModel extends model
      * @access public
      * @return void
      */
-    public function printCell($col, $task, $users, $browseType, $branchGroups, $modulePairs = array(), $mode = 'datatable', $child = false, $projectStart = true)
+    public function printCell($col, $task, $users, $browseType, $branchGroups, $modulePairs = array(), $mode = 'datatable', $child = false, $projectStatus = 'noconfirm')
     {
         $canBatchEdit         = common::hasPriv('task', 'batchEdit', !empty($task) ? $task : null);
         $canBatchClose        = (common::hasPriv('task', 'batchClose', !empty($task) ? $task : null) && strtolower($browseType) != 'closedBy');
@@ -2793,7 +2794,7 @@ class taskModel extends model
                     break;
                 }
 
-                $task->isProjectStart = $projectStart;
+                $task->projectStatus = $projectStatus;
                 if($task->status != 'pause') common::printIcon('task', 'start', "taskID=$task->id", $task, 'list', '', '', 'iframe', true);
                 if($task->status == 'pause') common::printIcon('task', 'restart', "taskID=$task->id", $task, 'list', '', '', 'iframe', true);
                 common::printIcon('task', 'close',  "taskID=$task->id", $task, 'list', '', '', 'iframe', true);
