@@ -2406,6 +2406,90 @@ class project extends control
     }
 
     /**
+     * All project.
+     *
+     * @param  string $status
+     * @param  int    $projectID
+     * @param  string $orderBy
+     * @param  int    $productID
+     * @param  int    $recTotal
+     * @param  int    $recPerPage
+     * @param  int    $pageID
+     * @access public
+     * @return void
+     */
+    public function allSprint($status = 'undone', $projectID = 0, $orderBy = 'order_desc', $productID = 0, $recTotal = 0, $recPerPage = 10, $pageID = 1)
+    {
+        if($this->projects)
+        {
+            $project   = $this->commonAction($projectID);
+            $projectID = $project->id;
+        }
+        $this->session->set('projectList', $this->app->getURI(true));
+
+        /* Load pager and get tasks. */
+        $this->app->loadClass('pager', $static = true);
+        $pager = new pager($recTotal, $recPerPage, $pageID);
+
+        $this->app->loadLang('my');
+        $this->view->title         = $this->lang->project->allProject;
+        $this->view->position[]    = $this->lang->project->allProject;
+        $this->view->projectStats  = $this->project->getProjectStats($status == 'byproduct' ? 'all' : $status, $productID, 0, 30, $orderBy, $pager, true);
+        $this->view->products      = array(0 => $this->lang->product->select) + $this->loadModel('product')->getPairs();
+        $this->view->productID     = $productID;
+        $this->view->projectID     = $projectID;
+        $this->view->pager         = $pager;
+        $this->view->orderBy       = $orderBy;
+        $this->view->users         = $this->loadModel('user')->getPairs('noletter');
+        $this->view->status        = $status;
+        $this->view->allstatus     = 'allsprint';
+
+        $this->display();
+    }
+
+    /**
+     * All project.
+     *
+     * @param  string $status
+     * @param  int    $projectID
+     * @param  string $orderBy
+     * @param  int    $productID
+     * @param  int    $recTotal
+     * @param  int    $recPerPage
+     * @param  int    $pageID
+     * @access public
+     * @return void
+     */
+    public function allNotSprint($status = 'undone', $projectID = 0, $orderBy = 'order_desc', $productID = 0, $recTotal = 0, $recPerPage = 10, $pageID = 1)
+    {
+        if($this->projects)
+        {
+            $project   = $this->commonAction($projectID);
+            $projectID = $project->id;
+        }
+        $this->session->set('projectList', $this->app->getURI(true));
+
+        /* Load pager and get tasks. */
+        $this->app->loadClass('pager', $static = true);
+        $pager = new pager($recTotal, $recPerPage, $pageID);
+
+        $this->app->loadLang('my');
+        $this->view->title         = $this->lang->project->allProject;
+        $this->view->position[]    = $this->lang->project->allProject;
+        $this->view->projectStats  = $this->project->getProjectStats($status == 'byproduct' ? 'all' : $status, $productID, 0, 30, $orderBy, $pager, false);
+        $this->view->products      = array(0 => $this->lang->product->select) + $this->loadModel('product')->getPairs();
+        $this->view->productID     = $productID;
+        $this->view->projectID     = $projectID;
+        $this->view->pager         = $pager;
+        $this->view->orderBy       = $orderBy;
+        $this->view->users         = $this->loadModel('user')->getPairs('noletter');
+        $this->view->status        = $status;
+        $this->view->allstatus     = 'allnotsprint';
+
+        $this->display();
+    }
+
+    /**
      * Export project.
      *
      * @param  string $status
@@ -2414,7 +2498,7 @@ class project extends control
      * @access public
      * @return void
      */
-    public function export($status, $productID, $orderBy)
+    public function export($status, $productID, $orderBy, $allstatus)
     {
         if($_POST)
         {
@@ -2430,7 +2514,7 @@ class project extends control
                 unset($fields[$key]);
             }
 
-            $projectStats = $this->project->getProjectStats($status == 'byproduct' ? 'all' : $status, $productID, 0, 30, $orderBy, null);
+            $projectStats = $this->project->getProjectStats($status == 'byproduct' ? 'all' : $status, $productID, 0, 30, $orderBy, null, $allstatus === 'allsprint');
             $users        = $this->loadModel('user')->getPairs('noletter');
             foreach($projectStats as $i => $project)
             {

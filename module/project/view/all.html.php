@@ -14,14 +14,14 @@
 <div id='mainMenu' class='clearfix'>
   <div class='btn-toolbar pull-left'>
     <?php foreach($lang->project->featureBar['all'] as $key => $label):?>
-    <?php echo html::a(inlink("all", "status=$key&projectID=$project->id&orderBy=$orderBy&productID=$productID"), "<span class='text'>{$label}</span>", '', "class='btn btn-link' id='{$key}Tab'");?>
+    <?php echo html::a(inlink($allstatus, "status=$key&projectID=$project->id&orderBy=$orderBy&productID=$productID"), "<span class='text'>{$label}</span>", '', "class='btn btn-link' id='{$key}Tab'");?>
     <?php endforeach;?>
     <div class='input-control space w-180px'>
       <?php echo html::select('product', $products, $productID, "class='chosen form-control' onchange='byProduct(this.value, $projectID, \"$status\")'");?>
     </div>
   </div>
   <div class='btn-toolbar pull-right'>
-    <?php common::printLink('project', 'export', "status=$status&productID=$productID&orderBy=$orderBy", "<i class='icon-export muted'> </i>" . $lang->export, '', "class='btn btn-link export'")?>
+    <?php common::printLink('project', 'export', "status=$status&productID=$productID&orderBy=$orderBy&allstatus=$allstatus", "<i class='icon-export muted'> </i>" . $lang->export, '', "class='btn btn-link export'")?>
     <?php common::printLink('project', 'create', '', "<i class='icon-plus'></i> " . $lang->project->create, '', "class='btn btn-primary'")?>
   </div>
 </div>

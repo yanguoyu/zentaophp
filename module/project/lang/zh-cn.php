@@ -12,6 +12,8 @@
 /* 字段列表。*/
 $lang->project->common        = $lang->projectCommon . '视图';
 $lang->project->allProjects   = '所有' . $lang->projectCommon;
+$lang->project->allSprintProjects   = '所有短期' . $lang->projectCommon;
+$lang->project->allNotSprintProjects   = '所有长期' . $lang->projectCommon;
 $lang->project->id            = $lang->projectCommon . '编号';
 $lang->project->type          = $lang->projectCommon . '类型';
 $lang->project->name          = $lang->projectCommon . '名称';
