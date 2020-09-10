@@ -1210,10 +1210,11 @@ class taskModel extends model
                 $earliestTime = $record->dates[$id];
             }
 
-            if(!empty($record->work[$id]) or !empty($record->consumed[$id]))
+            if(!empty($record->work[$id]) or !empty($record->consumed[$id]) or !empty($record->left[$id]))
             {
                 if(!$record->consumed[$id])   die(js::alert($this->lang->task->error->consumedThisTime));
                 if($record->left[$id] === '') die(js::alert($this->lang->task->error->left));
+                if(!$record->work[$id]) die(js::alert($this->lang->task->error->work));
 
                 $estimates[$id] = new stdclass();
                 $estimates[$id]->date     = $record->dates[$id];
@@ -2007,6 +2008,7 @@ class taskModel extends model
         $task        = $this->getById($oldEstimate->task);
         $this->dao->update(TABLE_TASKESTIMATE)->data($estimate)
             ->autoCheck()
+            ->check('work', 'notempty')
             ->check('consumed', 'notempty')
             ->where('id')->eq((int)$estimateID)
             ->exec();
