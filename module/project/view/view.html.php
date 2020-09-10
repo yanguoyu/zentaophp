@@ -161,11 +161,11 @@
               } else {
                 common::printIcon('project', 'changewillend',    "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
               }
-              common::printIcon('project', 'start',    "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
+              common::printIcon('approve', 'create',   "projectID=$project->id&type=start", $project, 'button', '', '');
               common::printIcon('project', 'activate', "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
               common::printIcon('project', 'putoff',   "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
-              common::printIcon('project', 'suspend',  "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
-              common::printIcon('project', 'close',    "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
+              common::printIcon('approve', 'suspend',  "projectID=$project->id&type=suspend", $project, 'button', '', '', 'iframe', true);
+              common::printIcon('approve', 'close',    "projectID=$project->id&type=close", $project, 'button', '', '', 'iframe', true);
 
               echo $this->buildOperateMenu($project, 'view');
 

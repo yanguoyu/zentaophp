@@ -538,12 +538,35 @@ class block extends control
      * @access public
      * @return void
      */
-    public function printTaskBlock()
+    public function printTaskBlock($module = '')
     {
+        if ($module == 'approve') {
+            $func = 'print' . ucfirst($module) . 'Assign';
+            $this->view->module = $module;
+            $this->$func();
+            return;
+        }
         $this->session->set('taskList',  $this->server->http_referer);
         $this->session->set('storyList', $this->server->http_referer);
         if(preg_match('/[^a-zA-Z0-9_]/', $this->params->type)) die();
         $this->view->tasks = $this->loadModel('task')->getUserTasks($this->app->user->account, $this->params->type, $this->viewType == 'json' ? 0 : (int)$this->params->num, null, $this->params->orderBy);
+    }
+
+    /**
+     * Print approve block.
+     *
+     * @access public
+     * @return void
+     */
+    public function printApproveAssign()
+    {
+        $this->app->loadClass('pager', $static = true);
+        if(!empty($this->params->type) and preg_match('/[^a-zA-Z0-9_]/', $this->params->type)) die();
+        $num   = isset($this->params->num) ? (int)$this->params->num : 0;
+        $type  = isset($this->params->type) ? $this->params->type : 'all';
+        $pager = pager::init(0, $num, 1);
+        $this->view->users        = $this->loadModel('user')->getPairs('noletter');
+        $this->view->approveStats = $this->loadModel('approve')->getApproveStats($type, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $this->viewType != 'json' ? $pager : '');
     }
 
     /**
@@ -1094,6 +1117,49 @@ class block extends control
      * @access public
      * @return void
      */
+    public function printApproveOverviewBlock()
+    {
+        $approves = $this->loadModel('approve')->getList();
+
+        $total = 0;
+        $today = helper::today();
+        foreach($approves as $approve)
+        {
+            if ($approve->end < $today
+            && $approve->status !== 'done'
+            && $approve->status !== 'closed'
+            && $approve->status !== 'suspended'
+            ) {
+                $approve->status = 'delayed';
+            }
+        }
+
+        foreach($approves as $approve)
+        {
+            $projectsOutput[$approve->status] = $approve->status;
+            if(!isset($overview[$approve->status])) $overview[$approve->status] = 0;
+            $overview[$approve->status]++;
+            $total++;
+        }
+
+        $overviewPercent = array();
+        foreach($this->lang->project->statusList as $statusKey => $statusName)
+        {
+            if(!isset($overview[$statusKey])) $overview[$statusKey] = 0;
+            $overviewPercent[$statusKey] = $total ? round($overview[$statusKey] / $total, 2) * 100 . '%' : '0%';
+        }
+
+        $this->view->total           = $total;
+        $this->view->overview        = $overview;
+        $this->view->overviewPercent = $overviewPercent;
+    }
+
+    /**
+     * Print project overview block.
+     *
+     * @access public
+     * @return void
+     */
     public function printProjectOverviewBlock()
     {
         $projects = $this->loadModel('project')->getList();
@@ -1157,6 +1223,24 @@ class block extends control
         $this->view->total        = $total;
         $this->view->casePairs    = $casePairs;
         $this->view->casePercents = $casePercents;
+    }
+
+
+    /**
+     * Print project block.
+     *
+     * @access public
+     * @return void
+     */
+    public function printApproveBlock()
+    {
+        $this->app->loadClass('pager', $static = true);
+        if(!empty($this->params->type) and preg_match('/[^a-zA-Z0-9_]/', $this->params->type)) die();
+        $num   = isset($this->params->num) ? (int)$this->params->num : 0;
+        $type  = isset($this->params->type) ? $this->params->type : 'all';
+        $pager = pager::init(0, $num, 1);
+        $this->view->users        = $this->loadModel('user')->getPairs('noletter');
+        $this->view->approveStats = $this->loadModel('approve')->getApproveStats($type, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $this->viewType != 'json' ? $pager : '');
     }
 
     /**

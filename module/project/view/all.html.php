@@ -17,7 +17,7 @@
     <?php echo html::a(inlink($allstatus, "status=$key&projectID=$project->id&orderBy=$orderBy&productID=$productID"), "<span class='text'>{$label}</span>", '', "class='btn btn-link' id='{$key}Tab'");?>
     <?php endforeach;?>
     <div class='input-control space w-180px'>
-      <?php echo html::select('product', $products, $productID, "class='chosen form-control' onchange='byProduct(this.value, $projectID, \"$status\")'");?>
+      <?php echo html::select('product', $products, $productID, "class='chosen form-control' onchange='byProduct(this.value, $projectID, \"$status\", \"$allstatus\")'");?>
     </div>
   </div>
   <div class='btn-toolbar pull-right'>

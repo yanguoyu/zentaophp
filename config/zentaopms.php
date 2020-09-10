@@ -57,10 +57,18 @@ $config->projectCommonList['en'][2] = 'Sprint';
 $config->projectCommonList['de'][0] = 'Projekt';
 $config->projectCommonList['de'][1] = 'Iteration';
 $config->projectCommonList['de'][2] = 'Sprint';
+$config->projectCommonList['de'][3] = 'Approve';
 
 $config->projectCommonList['fr'][0] = 'Projet';
 $config->projectCommonList['fr'][1] = 'Iteration';
 $config->projectCommonList['fr'][2] = 'Sprint';
+
+
+/* Approve common list. */
+$config->approveCommonList['zh-cn'][0] = '审批';
+$config->approveCommonList['zh-tw'][0] = '审批';
+$config->approveCommonList['en'][0] = 'Approve';
+$config->approveCommonList['fr'][0] = 'Approve';
 
 /* Story common list. */
 $config->storyCommonList['zh-cn'][0] = '需求';
@@ -138,6 +146,7 @@ define('TABLE_STORYSTAGE',    '`' . $config->db->prefix . 'storystage`');
 define('TABLE_PRODUCTPLAN',   '`' . $config->db->prefix . 'productplan`');
 define('TABLE_RELEASE',       '`' . $config->db->prefix . 'release`');
 
+define('TABLE_APPROVE',       '`' . $config->db->prefix . 'approve`');
 define('TABLE_PROJECT',       '`' . $config->db->prefix . 'project`');
 define('TABLE_TASK',          '`' . $config->db->prefix . 'task`');
 define('TABLE_TEAM',          '`' . $config->db->prefix . 'team`');

@@ -1,6 +1,7 @@
 <?php
 /* Sort of main menu. */
 $lang->menuOrder[5]  = 'my';
+$lang->menuOrder[6]  = 'approve';
 $lang->menuOrder[10] = 'product';
 $lang->menuOrder[15] = 'project';
 $lang->menuOrder[20] = 'qa';
@@ -57,6 +58,21 @@ $lang->project->menuOrder[40] = 'team';
 $lang->project->menuOrder[45] = 'action';
 $lang->project->menuOrder[50] = 'product';
 $lang->project->menuOrder[55] = 'view';
+$lang->task->menuOrder        = $lang->project->menuOrder;
+$lang->build->menuOrder       = $lang->project->menuOrder;
+
+/* approve menu order. */
+$lang->approve->menuOrder[5]  = 'task';
+$lang->approve->menuOrder[10] = 'kanban';
+$lang->approve->menuOrder[15] = 'burn';
+$lang->approve->menuOrder[20] = 'list';
+$lang->approve->menuOrder[25] = 'story';
+$lang->approve->menuOrder[30] = 'qa';
+$lang->approve->menuOrder[35] = 'doc';
+$lang->approve->menuOrder[40] = 'team';
+$lang->approve->menuOrder[45] = 'action';
+$lang->approve->menuOrder[50] = 'product';
+$lang->approve->menuOrder[55] = 'view';
 $lang->task->menuOrder        = $lang->project->menuOrder;
 $lang->build->menuOrder       = $lang->project->menuOrder;
 
