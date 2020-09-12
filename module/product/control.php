@@ -78,7 +78,7 @@ class product extends control
 
         $this->app->loadLang('my');
         $this->view->projectStats  = $this->loadModel('project')->getProjectStats($status, $productID, $branch);
-
+        $this->view->users         = $this->loadModel('user')->getPairs('noletter');
         $this->view->title      = $this->products[$productID] . $this->lang->colon . $this->lang->product->project;
         $this->view->position[] = $this->products[$productID];
         $this->view->position[] = $this->lang->product->project;

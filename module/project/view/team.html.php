@@ -14,7 +14,7 @@
 <?php js::set('confirmUnlinkMember', $lang->project->confirmUnlinkMember)?>
 <div id='mainMenu' class='clearfix'>
   <div class='btn-toolbar pull-left'>
-    <span class='btn btn-link btn-active-text'><span class='text'><?php echo $lang->project->team;?></span></span>
+    <span class='btn btn-link btn-active-text'><span class='text'><?php echo $lang->project->relatedMember;?></span></span>
   </div>
   <div class='btn-toolbar pull-right'>
     <?php

@@ -31,9 +31,9 @@
           <th class='w-80px'><?php echo $lang->project->dateRange;?></th>
           <td colspan='2'>
             <div class='input-group'>
-              <?php echo html::input('begin', $project->begin, "class='form-control form-date' onchange='computeWorkDays()' placeholder='" . $lang->project->begin . "'");?>
+              <?php echo html::input('begin', $project->begin, "class='form-control form-date' onchange='computeWorkDays()' placeholder='" . $lang->project->begin . "'required");?>
               <span class='input-group-addon'><?php echo $lang->project->to;?></span>
-              <?php echo html::input('end', $project->end, "class='form-control form-date' onchange='computeWorkDays()' placeholder='" . $lang->project->end . "'");?>
+              <?php echo html::input('end', $project->end, "class='form-control form-date' onchange='computeWorkDays()' placeholder='" . $lang->project->end . "'required");?>
               <div class='input-group-btn'>
                 <button type='button' class='btn dropdown-toggle' data-toggle='dropdown'><?php echo $lang->project->byPeriod;?> <span class='caret'></span></button>
                 <ul class='dropdown-menu'>
@@ -48,7 +48,7 @@
         </tr>
         <tr>
           <th><?php echo $lang->comment;?></th>
-          <td colspan='3'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+          <td colspan='3'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'required");?></td>
         </tr>
         <tr>
           <td colspan='4' class='text-center form-actions'><?php echo html::submitButton($lang->project->start) . ' ' .  html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>

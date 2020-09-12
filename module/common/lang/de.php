@@ -345,7 +345,7 @@ $lang->report->menu = new stdclass();
 $lang->report->menu->product = array('link' => $lang->productCommon . '|report|productsummary');
 $lang->report->menu->prj     = array('link' => $lang->projectCommon . '|report|projectdeviation');
 $lang->report->menu->test    = array('link' => 'Test|report|bugcreate', 'alias' => 'bugassign');
-$lang->report->menu->staff   = array('link' => 'Unternehmen|report|workload');
+$lang->report->menu->staff   = array('link' => 'Unternehmen|report|workload','alias' => 'workhour');
 
 $lang->report->notice = new stdclass();
 $lang->report->notice->help = 'Hinweis: Berichte wurde auf Basis der Suche generiert. Bitte suchen Sie in der Liste bevor Sie einen Bericht generieren.';

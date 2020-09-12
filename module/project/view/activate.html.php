@@ -56,7 +56,7 @@
       <?php $this->printExtendFields($project, 'table', 'columns=5');?>
       <tr>
         <th><?php echo $lang->comment;?></th>
-        <td colspan='5'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+        <td colspan='5'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true' required");?></td>
       </tr>
       <tr>
         <td class='text-center form-actions' colspan='6'><?php echo html::submitButton() . html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>

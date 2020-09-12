@@ -382,7 +382,7 @@ class reportModel extends model
             ->leftJoin(TABLE_PROJECT)->alias('t3')->on('t3.id = t2.project')
             ->where('t1.date') ->ge($begin)
             ->andWhere('t1.date') -> le($end)
-            ->andWhere('t2.deleted') -> eq(0)
+            ->andWhere('t2.deleted')->eq(0)
             ->beginIF($dept)->andWhere('t1.account')->in(array_keys($deptUsers))->fi()
             ->fetchAll();
         $isDoingTasks = $this->dao->select('t1.project, t2.name as projectName, t1.assignedTo as account, (0) as consumed')
@@ -408,33 +408,33 @@ class reportModel extends model
         foreach ($isDoingTasks as $k => $val) {    //数据分组
             $workloadtmp[$val->account][] = $val;
         }
-        $workload = [];
+        $workhour = [];
         foreach ($workloadtmp as $k => $val) {
-            $workload[$k]['account'] = $k;
-            $workload[$k]['totalConsumed'] = 0;
-            $workload[$k]['projects'] = array();
+            $workhour[$k]['account'] = $k;
+            $workhour[$k]['totalConsumed'] = 0;
+            $workhour[$k]['projects'] = array();
             foreach ($val as $task) {
                 if ($task->project !== null) {
-                    if(!isset($workload[$k]['projects'][$task->project])) {
-                        $workload[$k]['projects'][$task->project]['project'] = $task->project;
-                        $workload[$k]['projects'][$task->project]['consumed'] = $task->consumed;
-                        $workload[$k]['projects'][$task->project]['projectName'] = $task->projectName;
+                    if(!isset($workhour[$k]['projects'][$task->project])) {
+                        $workhour[$k]['projects'][$task->project]['project'] = $task->project;
+                        $workhour[$k]['projects'][$task->project]['consumed'] = $task->consumed;
+                        $workhour[$k]['projects'][$task->project]['projectName'] = $task->projectName;
                     } else {
-                        $workload[$k]['projects'][$task->project]['consumed'] += $task->consumed;
+                        $workhour[$k]['projects'][$task->project]['consumed'] += $task->consumed;
                     }
-                    $workload[$k]['totalConsumed'] += $task->consumed;
+                    $workhour[$k]['totalConsumed'] += $task->consumed;
                 }
             }
-            if (count($workload[$k]['projects']) === 0) {
-                $workload[$k]['projects']['no_project']['project'] = 'no_project';
-                $workload[$k]['projects']['no_project']['consumed'] = 0;
-                $workload[$k]['projects']['no_project']['projectName'] = $this->lang->report->noTask;
+            if (count($workhour[$k]['projects']) === 0) {
+                $workhour[$k]['projects']['no_project']['project'] = 'no_project';
+                $workhour[$k]['projects']['no_project']['consumed'] = 0;
+                $workhour[$k]['projects']['no_project']['projectName'] = $this->lang->report->noTask;
             }
             else {
-                asort($workload[$k]['projects']);
+                asort($workhour[$k]['projects']);
             }
         }
-        return $workload;
+        return $workhour;
     }
 
     /**

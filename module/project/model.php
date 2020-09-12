@@ -92,8 +92,7 @@ class projectModel extends model
             $projectIndex  = '<div class="btn-group angle-btn' . ($methodName == 'index' ? ' active' : '') . '"><div class="btn-group"><button data-toggle="dropdown" type="button" class="btn">' . $label . ' <span class="caret"></span></button>';
             $projectIndex .= '<ul class="dropdown-menu">';
             if(common::hasPriv('project', 'index'))  $projectIndex .= '<li>' . html::a(helper::createLink('project', 'index', 'locate=no'), '<i class="icon icon-home"></i> ' . $this->lang->project->index) . '</li>';
-            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'allnotsprint', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allNotSprintProjects) . '</li>';
-            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'allsprint', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allSprintProjects) . '</li>';
+            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'all', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allProjects) . '</li>';
 
             if(common::isTutorialMode())
             {
@@ -495,7 +494,7 @@ class projectModel extends model
         return $allChanges;
     }
 
-    /**
+ /**
      * Confirm project.
      *
      * @param  int    $projectID
@@ -504,16 +503,27 @@ class projectModel extends model
      */
     public function confirm($projectID)
     {
+        if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
+
         $project = fixer::input('post')
             ->setDefault('status', 'wait')
             ->remove('comment')->get();
 
         $this->dao->update(TABLE_PROJECT)->data($project)
-            ->autoCheck()
+            ->check('team', 'notempty') 
+            ->check('PO', 'notempty')
+            ->check('PM', 'notempty')
+            ->check('RD', 'notempty')
             ->where('id')->eq((int)$projectID)
             ->exec();
+
         foreach($project as $fieldName => $value)
         {
             if($fieldName == 'PO' or $fieldName == 'PM' or $fieldName == 'QD' or $fieldName == 'RD' )
@@ -536,7 +546,7 @@ class projectModel extends model
     }
 
     /**
-     * Confirm project.
+     * changewillend project.
      *
      * @param  int    $projectID
      * @access public
@@ -544,16 +554,57 @@ class projectModel extends model
      */
     public function changewillend($projectID)
     {
+       if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
         $project = fixer::input('post')
             ->remove('comment')->get();
 
         $this->dao->update(TABLE_PROJECT)->data($project)
-            ->autoCheck()
+            ->check($this->config->project->changewillend->requiredFields,'notempty')
             ->where('id')->eq((int)$projectID)
             ->exec();
         if(!dao::isError()) return common::createChanges($oldProject, $project);
+    }
+
+   /**
+     * cancel project.
+     *
+     * @param  int    $projectID
+     * @access public
+     * @return array
+     */
+    public function cancel($projectID)
+    {
+       if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
+        $oldProject = $this->getById($projectID);
+        $now        = helper::now();
+        $project = fixer::input('post')
+            ->setDefault('status', 'canceled')
+            ->setDefault('canceledBy', $this->app->user->account)
+            ->setDefault('canceledDate', $now)
+            ->remove('comment')
+            ->get();
+
+        $this->dao->update(TABLE_PROJECT)->data($project)
+            ->autoCheck()
+            ->where('id')->eq((int)$projectID)
+            ->exec();
+        if(!dao::isError())
+        {
+            $this->loadModel('score')->create('project', 'cancel', $oldProject);
+            return common::createChanges($oldProject, $project);
+        }
     }
 
     /**
@@ -565,6 +616,12 @@ class projectModel extends model
      */
     public function start($projectID)
     {
+       if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
         $project = fixer::input('post')
@@ -572,7 +629,8 @@ class projectModel extends model
             ->remove('comment')->get();
 
         $this->dao->update(TABLE_PROJECT)->data($project)
-            ->autoCheck()
+            ->check('begin', 'notempty') 
+            ->check('end', 'notempty') 
             ->where('id')->eq((int)$projectID)
             ->exec();
 
@@ -588,12 +646,19 @@ class projectModel extends model
      */
     public function putoff($projectID)
     {
+       if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
         $project = fixer::input('post')->remove('comment')->get();
 
         $this->dao->update(TABLE_PROJECT)->data($project)
-            ->autoCheck()
+            ->check('begin', 'notempty') 
+            ->check('end', 'notempty')
             ->where('id')->eq((int)$projectID)
             ->exec();
 
@@ -609,6 +674,12 @@ class projectModel extends model
      */
     public function suspend($projectID)
     {
+       if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
         $project = fixer::input('post')
@@ -632,6 +703,12 @@ class projectModel extends model
      */
     public function activate($projectID)
     {
+       if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
         $project = fixer::input('post')
@@ -697,6 +774,12 @@ class projectModel extends model
      */
     public function close($projectID)
     {
+       if(!$this->post->comment)
+        {
+            dao::$errors[] = sprintf($this->lang->error->notempty, $this->lang->comment);
+            return false;
+        }
+
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
         $project = fixer::input('post')
@@ -776,7 +859,7 @@ class projectModel extends model
      * @access public
      * @return array
      */
-    public function getList($status = 'all', $limit = 0, $productID = 0, $branch = 0, $isSprint = null)
+    public function getList($status = 'all', $limit = 0, $productID = 0, $branch = 0)
     {
         if($status == 'involved') return $this->getInvolvedList($status, $limit, $productID, $branch);
 
@@ -788,8 +871,6 @@ class projectModel extends model
                 ->where('t1.product')->eq($productID)
                 ->andWhere('t2.deleted')->eq(0)
                 ->andWhere('t2.iscat')->eq(0)
-                ->beginIF($isSprint == true)->andWhere('t2.type')->eq('sprint')->fi()
-                ->beginIF($isSprint == false)->andWhere('t2.type')->ne('sprint')->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.status')->notIN('done,closed,suspended')->fi()
                 ->beginIF($status == 'undone')->andWhere('t2.status')->notIN('done,closed')->fi()
@@ -803,8 +884,6 @@ class projectModel extends model
         else
         {
             return $this->dao->select('*, IF(INSTR(" done,closed", status) < 2, 0, 1) AS isDone')->from(TABLE_PROJECT)->where('iscat')->eq(0)
-                ->beginIF($isSprint == true)->andWhere('type')->eq('sprint')->fi()
-                ->beginIF($isSprint == false)->andWhere('type')->ne('sprint')->fi()
                 ->beginIF($status == 'undone')->andWhere('status')->notIN('done,closed')->fi()
                 ->beginIF($status == 'delayed')->andWhere('end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('status')->notIN('done,closed,suspended')->fi()
@@ -907,13 +986,15 @@ class projectModel extends model
      * @access public
      * @return void
      */
-    public function getProjectStats($status = 'undone', $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null, $isSprint = null)
+    public function getProjectStats($status = 'undone', $productID = 0, $productName = null, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null)
     {
         /* Init vars. */
-        $projects = $this->getList($status, 0, $productID, $branch, $isSprint);
-        $projects = $this->dao->select('*')->from(TABLE_PROJECT)
-            ->where('id')->in(array_keys($projects))
-            ->orderBy($orderBy)
+        $projects = $this->getList($status, 0, $productID, $productName, $branch);
+        $projects = $this->dao->select('t1.*,t3.name AS productName')->from(TABLE_PROJECT)->alias('t1')
+            ->leftjoin(TABLE_PROJECTPRODUCT)->alias('t2')->on('t1.id = t2.project')
+            ->leftjoin(TABLE_PRODUCT)->alias('t3')->on('t2.product = t3.id')
+            ->where('t1.id')->in(array_keys($projects))
+            ->orderBy('t1.order desc')
             ->page($pager)
             ->fetchAll('id');
 
@@ -1365,7 +1446,7 @@ class projectModel extends model
         $projects = $this->dao->select('product, project')->from(TABLE_PROJECTPRODUCT)->where('product')->in(array_keys($products))->fetchGroup('project');
         $branches = str_replace(',', "','", $branches);
 
-        $tasks = $this->dao->select('t1.*, t2.id AS storyID, t2.title AS storyTitle, t2.version AS latestStoryVersion, t2.status AS storyStatus, t3.realname AS assignedToRealName')->from(TABLE_TASK)->alias('t1')
+        $tasks = $this->dao->select('t1.*, t2.id AS storyID, t2.title AS storyTitle, t2.version AS latestStoryVersion, t2.status AS storyStatus, r.realname AS assignedToRealName')->from(TABLE_TASK)->alias('t1')
             ->leftJoin(TABLE_STORY)->alias('t2')->on('t1.story = t2.id')
             ->leftJoin(TABLE_USER)->alias('t3')->on('t1.assignedTo = t3.account')
             ->where('t1.status')->in('wait, doing, pause, cancel')
@@ -2185,10 +2266,11 @@ class projectModel extends model
         $action = strtolower($action);
 
         if($action == 'start')    return $project->status == 'wait';
-        if($action == 'close')    return $project->status != 'closed';
+        if($action == 'close')    return $project->status != 'closed' and $project->status != 'canceled';
         if($action == 'suspend')  return $project->status == 'wait' or $project->status == 'doing';
         if($action == 'putoff')   return $project->status == 'wait' or $project->status == 'doing';
         if($action == 'activate') return $project->status == 'suspended' or $project->status == 'closed';
+        if($action == 'cancel')   return $project->status == 'noconfirm' or $project->status == 'wait' or $project->status == 'doing' or $project->status == 'suspended';
 
         return true;
     }
