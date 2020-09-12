@@ -48,11 +48,15 @@
                     <?php echo html::input('name', $task->name, 'class="form-control task-name" placeholder="' . $lang->task->name . '"');?>
                   </div>
                   <?php if(empty($task->children) and empty($task->parent) and $task->type != 'affair'):?>
-                  <span class='input-group-addon'>
+                 <span class='input-group-addon'>
+<?php
+/* 
                     <div class='checkbox-primary'>
                       <input type='checkBox' name='multiple' id='multiple' value='1' <?php echo empty($task->team) ? '' : 'checked';?> />
                       <label for='multiple'><?php echo $lang->task->multipleAB;?></label>
                     </div>
+*/
+?>
                   </span>
                   <?php endif;?>
                 </div>
@@ -107,11 +111,14 @@
                   </div>
                 </td>
               </tr>
+<?php
+/*
               <?php if($config->global->flow != 'onlyTask' and $project->type != 'ops'):?>
               <tr>
                 <th><?php echo $lang->task->story;?></th>
                 <td><span id="storyIdBox"><?php echo html::select('story', $stories, $task->story, "class='form-control chosen'");?></span></td>
               </tr>
+		
               <?php endif;?>
               <?php if($task->parent >= 0 and empty($task->team)):?>
               <tr>
@@ -119,6 +126,8 @@
                 <td><?php echo html::select('parent', $tasks, $task->parent, "class='form-control chosen'");?></td>
               </tr>
               <?php endif;?>
+*/
+?>
               <tr>
                 <th><?php echo $lang->task->assignedTo;?></th>
                 <td><span id="assignedToIdBox"><?php echo html::select('assignedTo', $members, $task->assignedTo, "class='form-control chosen'");?></span></td>

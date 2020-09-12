@@ -1,15 +1,15 @@
 <?php
-$lang->cron->common       = '计划任务';
+$lang->cron->common       = '计划子任务';
 $lang->cron->index        = '首页';
-$lang->cron->list         = '任务列表';
+$lang->cron->list         = '子任务列表';
 $lang->cron->create       = '添加';
-$lang->cron->createAction = '添加任务';
-$lang->cron->edit         = '编辑任务';
-$lang->cron->delete       = '删除任务';
+$lang->cron->createAction = '添加子任务';
+$lang->cron->edit         = '编辑子任务';
+$lang->cron->delete       = '删除子任务';
 $lang->cron->toggle       = '激活/禁用';
 $lang->cron->turnon       = '打开/关闭';
 $lang->cron->openProcess  = '重启';
-$lang->cron->restart      = '重启计划任务';
+$lang->cron->restart      = '重启计划子任务';
 
 $lang->cron->m        = '分';
 $lang->cron->h        = '小时';
@@ -18,7 +18,7 @@ $lang->cron->mon      = '月';
 $lang->cron->dow      = '周';
 $lang->cron->command  = '命令';
 $lang->cron->status   = '状态';
-$lang->cron->type     = '任务类型';
+$lang->cron->type     = '子任务类型';
 $lang->cron->remark   = '备注';
 $lang->cron->lastTime = '最后执行';
 
@@ -51,5 +51,5 @@ $lang->cron->notice->h    = '取值范围:0-23';
 $lang->cron->notice->dom  = '取值范围:1-31';
 $lang->cron->notice->mon  = '取值范围:1-12';
 $lang->cron->notice->dow  = '取值范围:0-6';
-$lang->cron->notice->help = '注：如果服务器重启，或者发现计划任务没有正常工作，那么计划任务已经停止工作。需要手动点击【重启】按钮，或者一分钟后刷新页面，来开启计划任务。如果任务列表中第一条记录的最后执行时间改变，说明任务开启成功。';
+$lang->cron->notice->help = '注：如果服务器重启，或者发现计划任务没有正常工作，那么计划任务已经停止工作。需要手动点击【重启】按钮，或者一分钟后刷新页面，来开启计划任务。如果任务列表中第一条记录的最后执行时间改变，说明子任务开启成功。';
 $lang->cron->notice->errorRule = '"%s" 填写的不是合法的值';

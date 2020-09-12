@@ -156,9 +156,9 @@ $lang->install->groupList['OTHERS']['desc']  = '其他';
 $lang->install->groupList['LIMITED']['name'] = '受限用户';
 $lang->install->groupList['LIMITED']['desc'] = '受限用户分组(只能编辑与自己相关的内容)';
 
-$lang->install->cronList[''] = '监控定时任务';
+$lang->install->cronList[''] = '监控定时子任务';
 $lang->install->cronList['moduleName=project&methodName=computeburn'] = '更新燃尽图';
-$lang->install->cronList['moduleName=report&methodName=remind']       = '每日任务提醒';
+$lang->install->cronList['moduleName=report&methodName=remind']       = '每日子任务提醒';
 $lang->install->cronList['moduleName=svn&methodName=run']             = '同步SVN';
 $lang->install->cronList['moduleName=git&methodName=run']             = '同步GIT';
 $lang->install->cronList['moduleName=backup&methodName=backup']       = '备份数据和附件';

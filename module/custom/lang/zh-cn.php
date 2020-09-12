@@ -21,7 +21,7 @@ $lang->custom->scoreReset = '重置积分';
 $lang->custom->scoreTitle = '积分功能';
 
 $lang->custom->object['story']    = $lang->storyCommon;
-$lang->custom->object['task']     = '任务';
+$lang->custom->object['task']     = '子任务';
 $lang->custom->object['bug']      = 'Bug';
 $lang->custom->object['testcase'] = '用例';
 $lang->custom->object['testtask'] = '版本';

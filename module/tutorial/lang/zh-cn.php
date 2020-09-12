@@ -58,9 +58,9 @@ $lang->tutorial->tasks['linkStory']         = array('title' => "关联{$lang->st
 $lang->tutorial->tasks['linkStory']['nav']  = array('module' => 'project', 'method' => 'linkStory', 'menu' => 'story', 'target' => '.link-story-btn', 'form' => '#linkStoryForm', 'formType' => 'table', 'submit' => '#submit', 'targetPageName' => "关联{$lang->storyCommon}");
 $lang->tutorial->tasks['linkStory']['desc'] = "<p>将{$lang->storyCommon}关联到{$lang->projectCommon}：</p><ul><li data-target='nav'>打开 <span class='task-nav'> {$lang->projectCommon} <i class='icon icon-angle-right'></i> {$lang->storyCommon} <i class='icon icon-angle-right'></i> 关联{$lang->storyCommon}</span> 页面；</li><li data-target='form'>在{$lang->storyCommon}列表中勾选要关联的{$lang->storyCommon}；</li><li data-target='submit'>保存关联的{$lang->storyCommon}信息。</li></ul>";
 
-$lang->tutorial->tasks['createTask']         = array('title' => '分解任务');
-$lang->tutorial->tasks['createTask']['nav']  = array('module' => 'task', 'method' => 'create', 'menuModule' => 'project', 'menu' => 'story', 'target' => '.btn-task-create', 'form' => '#dataform', 'submit' => '#submit', 'targetPageName' => '建任务');
-$lang->tutorial->tasks['createTask']['desc'] = "<p>将{$lang->projectCommon}{$lang->storyCommon}分解为任务：</p><ul><li data-target='nav'>打开 <span class='task-nav'> {$lang->projectCommon} <i class='icon icon-angle-right'></i> {$lang->storyCommon} <i class='icon icon-angle-right'></i> 分解任务</span> 页面；</li><li data-target='form'>在表单中填写任务信息；</li><li data-target='submit'>保存任务信息。</li></ul>";
+$lang->tutorial->tasks['createTask']         = array('title' => '分解子任务');
+$lang->tutorial->tasks['createTask']['nav']  = array('module' => 'task', 'method' => 'create', 'menuModule' => 'project', 'menu' => 'story', 'target' => '.btn-task-create', 'form' => '#dataform', 'submit' => '#submit', 'targetPageName' => '建子任务');
+$lang->tutorial->tasks['createTask']['desc'] = "<p>将{$lang->projectCommon}{$lang->storyCommon}分解为子任务：</p><ul><li data-target='nav'>打开 <span class='task-nav'> {$lang->projectCommon} <i class='icon icon-angle-right'></i> {$lang->storyCommon} <i class='icon icon-angle-right'></i> 分解子任务</span> 页面；</li><li data-target='form'>在表单中填写任务信息；</li><li data-target='submit'>保存子任务信息。</li></ul>";
 
 $lang->tutorial->tasks['createBug']         = array('title' => '提Bug');
 $lang->tutorial->tasks['createBug']['nav']  = array('module' => 'bug', 'method' => 'create', 'menuModule' => 'qa', 'menu' => 'bug', 'target' => '.btn-bug-create', 'form' => '#dataform', 'submit' => '#submit', 'targetPageName' => '提Bug');

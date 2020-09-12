@@ -37,7 +37,7 @@ $lang->block->welcome      = '欢迎总览';
 $lang->block->lblTesttask  = '查看测试详情';
 
 $lang->block->leftToday = '今天剩余工作总计';
-$lang->block->myTask    = '我的任务';
+$lang->block->myTask    = '我的子任务';
 $lang->block->myStory   = "我的{$lang->storyCommon}";
 $lang->block->myBug     = '我的BUG';
 $lang->block->myProject = '进行中的' . $lang->projectCommon;
@@ -109,7 +109,7 @@ $lang->block->default['project']['3']['params']['num']     = 15;
 $lang->block->default['project']['3']['params']['orderBy'] = 'id_desc';
 $lang->block->default['project']['3']['params']['type']    = 'undone';
 
-$lang->block->default['project']['4']['title'] = '指派给我的任务';
+$lang->block->default['project']['4']['title'] = '指派给我的子任务';
 $lang->block->default['project']['4']['block'] = 'task';
 $lang->block->default['project']['4']['grid']  = 4;
 
@@ -255,7 +255,7 @@ $lang->block->orderBy = '排序';
 $lang->block->availableBlocks = new stdclass();
 
 $lang->block->availableBlocks->todo     = '我的待办';
-$lang->block->availableBlocks->task     = '我的任务';
+$lang->block->availableBlocks->task     = '我的子任务';
 $lang->block->availableBlocks->bug      = '我的Bug';
 $lang->block->availableBlocks->case     = '我的用例';
 $lang->block->availableBlocks->story    = "我的{$lang->storyCommon}";
@@ -284,7 +284,7 @@ $lang->block->modules['project']->availableBlocks = new stdclass();
 $lang->block->modules['project']->availableBlocks->statistic = $lang->projectCommon . '统计';
 $lang->block->modules['project']->availableBlocks->overview  = $lang->projectCommon . '总览';
 $lang->block->modules['project']->availableBlocks->list      = $lang->projectCommon . '列表';
-$lang->block->modules['project']->availableBlocks->task      = '任务列表';
+$lang->block->modules['project']->availableBlocks->task      = '子任务列表';
 $lang->block->modules['project']->availableBlocks->build     = '版本列表';
 $lang->block->modules['qa'] = new stdclass();
 $lang->block->modules['qa']->availableBlocks = new stdclass();
@@ -348,7 +348,7 @@ $lang->block->orderByList->story['stage_asc']   = '阶段正序';
 $lang->block->orderByList->story['stage_desc']  = '阶段倒序';
 
 $lang->block->todoNum = '待办数';
-$lang->block->taskNum = '任务数';
+$lang->block->taskNum = '子任务数';
 $lang->block->bugNum  = 'Bug数';
 
 $lang->block->typeList = new stdclass();
@@ -419,6 +419,6 @@ $lang->block->gridOptions[4] = '右侧';
 $lang->block->flowchart   = array();
 $lang->block->flowchart['admin']   = array('管理员', '维护公司', '添加用户', '维护权限');
 $lang->block->flowchart['product'] = array($lang->productCommon . '经理', '创建' . $lang->productCommon, '维护模块', '维护计划', "维护{$lang->storyCommon}", '创建发布');
-$lang->block->flowchart['project'] = array($lang->projectCommon . '经理', '创建' . $lang->projectCommon, '维护团队', '关联' . $lang->productCommon, "关联{$lang->storyCommon}", '分解任务');
-$lang->block->flowchart['dev']     = array('研发人员', '领取任务和Bug', '更新状态', '完成任务和Bug');
+$lang->block->flowchart['project'] = array($lang->projectCommon . '经理', '创建' . $lang->projectCommon, '维护团队', '关联' . $lang->productCommon, "关联{$lang->storyCommon}", '分解子任务');
+$lang->block->flowchart['dev']     = array('研发人员', '领取子任务和Bug', '更新状态', '完成子任务和Bug');
 $lang->block->flowchart['tester']  = array('测试人员', '撰写用例', '执行用例', '提交Bug', '验证Bug', '关闭Bug');

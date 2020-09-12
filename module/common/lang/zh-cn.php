@@ -133,7 +133,7 @@ $lang->dividerMenu = ',qa,report,';
 /* 查询条中可以选择的对象列表。*/
 $lang->searchObjects['bug']         = 'Bug';
 $lang->searchObjects['story']       = "{$lang->storyCommon}";
-$lang->searchObjects['task']        = '任务';
+$lang->searchObjects['task']        = '子任务';
 $lang->searchObjects['testcase']    = '用例';
 $lang->searchObjects['project']     = $lang->projectCommon;
 $lang->searchObjects['product']     = $lang->productCommon;
@@ -186,7 +186,7 @@ $lang->my->menu = new stdclass();
 
 $lang->my->menu->index          = '首页|my|index';
 $lang->my->menu->calendar       = array('link' => '日程|my|calendar|', 'subModule' => 'todo', 'alias' => 'todo');
-$lang->my->menu->task           = array('link' => '任务|my|task|', 'subModule' => 'task');
+$lang->my->menu->task           = array('link' => '子任务|my|task|', 'subModule' => 'task');
 $lang->my->menu->bug            = array('link' => 'Bug|my|bug|', 'subModule' => 'bug');
 $lang->my->menu->testtask       = array('link' => '测试|my|testtask|', 'subModule' => 'testcase,testtask', 'alias' => 'testcase');
 $lang->my->menu->story          = array('link' => "{$lang->storyCommon}|my|story|", 'subModule' => 'story');
@@ -236,7 +236,7 @@ $lang->release->menu     = $lang->product->menu;
 $lang->project = new stdclass();
 $lang->project->menu = new stdclass();
 
-$lang->project->menu->task    = array('link' => '任务|project|task|projectID=%s', 'subModule' => 'task,tree', 'alias' => 'importtask,importbug');
+$lang->project->menu->task    = array('link' => '子任务列表|project|task|projectID=%s', 'subModule' => 'task,tree', 'alias' => 'importtask,importbug');
 $lang->project->menu->kanban  = array('link' => '看板|project|kanban|projectID=%s');
 $lang->project->menu->burn    = array('link' => '燃尽图|project|burn|projectID=%s');
 $lang->project->menu->list    = array('link' => '更多|project|grouptask|projectID=%s', 'alias' => 'grouptask,tree', 'class' => 'dropdown dropdown-hover');
@@ -346,7 +346,7 @@ $lang->report->menu = new stdclass();
 $lang->report->menu->product = array('link' => $lang->productCommon . '|report|productsummary');
 $lang->report->menu->prj     = array('link' => $lang->projectCommon . '|report|projectdeviation');
 $lang->report->menu->test    = array('link' => '测试|report|bugcreate', 'alias' => 'bugassign');
-$lang->report->menu->staff   = array('link' => '组织|report|workload');
+$lang->report->menu->staff   = array('link' => '组织|report|workload', 'alias' => 'workhour');
 
 $lang->report->notice = new stdclass();
 $lang->report->notice->help = '注：统计报表的数据来源于列表页面的检索结果，生成统计报表前请先在列表页面进行检索。比如列表页面我们检索的是%tab%，那么报表就是基于之前检索的%tab%的结果集进行统计。';
@@ -639,6 +639,7 @@ $lang->icons['activate']           = 'magic';
 $lang->icons['review']             = 'glasses';
 $lang->icons['confirm']            = 'search';
 $lang->icons['confirmBug']         = 'search';
+$lang->icons['changewillend']      = 'lightbulb';
 $lang->icons['putoff']             = 'calendar';
 $lang->icons['suspend']            = 'pause';
 $lang->icons['pause']              = 'pause';

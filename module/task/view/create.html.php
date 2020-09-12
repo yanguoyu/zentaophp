@@ -49,6 +49,7 @@
           </td>
           <td></td>
         </tr>
+
         <tr>
           <th><?php echo $lang->task->assignedTo;?></th>
           <td>
@@ -58,18 +59,24 @@
               <span class="input-group-btn team-group hidden"><a class="btn br-0" href="#modalTeam" data-toggle="modal"><?php echo $lang->task->team;?></a></span>
             </div>
           </td>
+<?php
+/*
           <td>
             <div class="checkbox-primary affair">
               <input type="checkbox" name="multiple" value="1" id="multipleBox"><label for="multipleBox" class="no-margin"><?php echo $lang->task->multiple;?></label>
             </div>
             <button id='selectAllUser' type="button" class="btn btn-link<?php if($task->type !== 'affair') echo ' hidden';?>"><?php echo $lang->task->selectAllUser;?></button>
           </td>
+*/
+?>
         </tr>
         <tr class='hide'>
           <th><?php echo $lang->task->status;?></th>
           <td><?php echo html::hidden('status', 'wait');?></td>
         </tr>
         <?php $this->printExtendFields('', 'table');?>
+<?php
+/*
         <?php if(strpos(",$showFields,", ',story,') !== false and $config->global->flow != 'onlyTask' and $project->type != 'ops'):?>
         <tr>
           <th><?php echo $lang->task->story;?></th>
@@ -85,6 +92,8 @@
           </td>
         </tr>
         <?php endif;?>
+*/
+?>
         <?php if($stories and $config->global->flow != 'onlyTask' and $project->type != 'ops'):?>
         <tr id='testStoryBox' class='hidden'>
           <th><?php echo $lang->task->selectTestStory;?></th>
@@ -255,7 +264,7 @@
         <?php endif;?>
         <tr <?php echo $config->global->flow == 'onlyTask' ? "class='hidden'" : '';?> id='after-tr'>
           <th><?php echo $lang->task->afterSubmit;?></th>
-          <td colspan='3'><?php echo html::radio('after', $lang->task->afterChoices, $config->global->flow == 'onlyTask' || !empty($task->id) ? 'toTaskList' : 'continueAdding');?></td>
+          <td colspan='3'><?php echo html::radio('after', [$lang->task->afterChoices['toTaskList']], $config->global->flow == 'onlyTask' || !empty($task->id) ? 'toTaskList' : 'continueAdding');?></td>
         </tr>
         <tr>
           <td colspan='4' class='text-center form-actions'>

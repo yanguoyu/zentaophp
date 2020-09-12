@@ -1179,7 +1179,6 @@ class block extends control
 
         foreach($projects as $project)
         {
-            $projectsOutput[$project->status] = $project->status;
             if(!isset($overview[$project->status])) $overview[$project->status] = 0;
             $overview[$project->status]++;
             $total++;

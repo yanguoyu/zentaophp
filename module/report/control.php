@@ -172,8 +172,8 @@ class report extends control
         $this->display();
     }
 
-    /**
-     * Workload report.
+ /**
+     * Workhour report.
      *
      * @param string $begin
      * @param string $end
@@ -195,7 +195,7 @@ class report extends control
             $dept    = $data->dept;
         }
 
-        $beginWeekDay = date('w') == 0 ? 7 : date('w');
+        $beginWeekDay = date('w') === 0 ? 7 : date('w');
 
         $this->app->loadConfig('project');
         $begin  = $begin ? strtotime($begin) : time() - (($beginWeekDay - 1) * 24 * 3600);
@@ -205,7 +205,7 @@ class report extends control
 
 
         $this->view->title      = $this->lang->report->workhour;
-        $this->view->position[] = $this->lang->report->workload;
+        $this->view->position[] = $this->lang->report->workhour;
 
         $this->view->workload = $this->report->getWorkHour($dept, $begin, $end);
         $this->view->users    = $this->loadModel('user')->getPairs('noletter|noclosed|nodeleted');
