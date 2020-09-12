@@ -21,7 +21,7 @@ $lang->bug->project          = '所属' . $lang->projectCommon;
 $lang->bug->story            = "相关{$lang->storyCommon}";
 $lang->bug->storyVersion     = "{$lang->storyCommon}版本";
 $lang->bug->color            = '标题颜色';
-$lang->bug->task             = '相关任务';
+$lang->bug->task             = '相关子任务';
 $lang->bug->title            = 'Bug标题';
 $lang->bug->severity         = '严重程度';
 $lang->bug->severityAB       = '级别';
@@ -38,7 +38,7 @@ $lang->bug->activatedCountAB = '激活次数';
 $lang->bug->activatedDate    = '激活日期';
 $lang->bug->confirmed        = '是否确认';
 $lang->bug->confirmedAB      = '确认';
-$lang->bug->toTask           = '转任务';
+$lang->bug->toTask           = '转子任务';
 $lang->bug->toStory          = "转{$lang->storyCommon}";
 $lang->bug->mailto           = '抄送给';
 $lang->bug->openedBy         = '由谁创建';
@@ -159,7 +159,7 @@ $lang->bug->createBuild   = '新建';
 /* legend列表。*/
 $lang->bug->legendBasicInfo             = '基本信息';
 $lang->bug->legendAttatch               = '附件';
-$lang->bug->legendPrjStoryTask          = $lang->projectCommon . "/{$lang->storyCommon}/任务";
+$lang->bug->legendPrjStoryTask          = $lang->projectCommon . "/{$lang->storyCommon}/子任务";
 $lang->bug->lblTypeAndSeverity          = '类型/严重程度';
 $lang->bug->lblSystemBrowserAndHardware = '系统/浏览器';
 $lang->bug->legendSteps                 = '重现步骤';
@@ -173,9 +173,9 @@ $lang->bug->buttonConfirm = '确认';
 
 /* 交互提示。*/
 $lang->bug->summary               = "本页共 <strong>%s</strong> 个Bug，未解决 <strong>%s</strong>。";
-$lang->bug->confirmChangeProduct  = "修改{$lang->productCommon}会导致相应的{$lang->projectCommon}、{$lang->storyCommon}和任务发生变化，确定吗？";
+$lang->bug->confirmChangeProduct  = "修改{$lang->productCommon}会导致相应的{$lang->projectCommon}、{$lang->storyCommon}和子任务发生变化，确定吗？";
 $lang->bug->confirmDelete         = '您确认要删除该Bug吗？';
-$lang->bug->remindTask            = '该Bug已经转化为任务，是否更新任务(编号:%s)状态 ?';
+$lang->bug->remindTask            = '该Bug已经转化为子任务，是否更新子任务(编号:%s)状态 ?';
 $lang->bug->skipClose             = 'Bug %s 不是已解决状态，不能关闭。';
 
 /* 模板。*/
@@ -370,7 +370,7 @@ $lang->bug->report->bugHistories->graph->xAxisName          = '处理步骤';
 $lang->bug->action = new stdclass();
 $lang->bug->action->resolved            = array('main' => '$date, 由 <strong>$actor</strong> 解决，方案为 <strong>$extra</strong> $appendLink。', 'extra' => 'resolutionList');
 $lang->bug->action->tostory             = array('main' => '$date, 由 <strong>$actor</strong> 转为<strong>{$lang->storyCommon}</strong>，编号为 <strong>$extra</strong>。');
-$lang->bug->action->totask              = array('main' => '$date, 由 <strong>$actor</strong> 导入为<strong>任务</strong>，编号为 <strong>$extra</strong>。');
+$lang->bug->action->totask              = array('main' => '$date, 由 <strong>$actor</strong> 导入为<strong>子任务</strong>，编号为 <strong>$extra</strong>。');
 $lang->bug->action->linked2plan         = array('main' => '$date, 由 <strong>$actor</strong> 关联到计划 <strong>$extra</strong>。');
 $lang->bug->action->unlinkedfromplan    = array('main' => '$date, 由 <strong>$actor</strong> 从计划 <strong>$extra</strong> 移除。');
 $lang->bug->action->linked2build        = array('main' => '$date, 由 <strong>$actor</strong> 关联到版本 <strong>$extra</strong>。');

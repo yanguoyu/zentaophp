@@ -86,7 +86,7 @@ $lang->user->tplContentNotEmpty    = '模板内容不能为空!';
 
 $lang->user->profile     = '档案';
 $lang->user->project     = $lang->projectCommon;
-$lang->user->task        = '任务';
+$lang->user->task        = '子任务';
 $lang->user->bug         = 'Bug';
 $lang->user->test        = '测试';
 $lang->user->testTask    = '测试单';
@@ -116,15 +116,15 @@ $lang->user->loginLocked  = "密码尝试次数太多，请联系管理员解锁
 $lang->user->weakPassword = "您的密码强度小于系统设定。";
 $lang->user->errorWeak    = "密码不能使用【%s】这些常用弱口令。";
 
-$lang->user->roleList['']       = '';
+$lang->user->roleList['admin']       = '系统管理员';
 $lang->user->roleList['dev']    = '研发';
 $lang->user->roleList['qa']     = '测试';
-$lang->user->roleList['pm']     = '项目经理';
-$lang->user->roleList['po']     = '产品经理';
-$lang->user->roleList['td']     = '研发主管';
+$lang->user->roleList['pm']     = '北京任务负责人';
+$lang->user->roleList['po']     = '部门负责人';
+$lang->user->roleList['td']     = '技术主管';
 $lang->user->roleList['pd']     = '产品主管';
 $lang->user->roleList['qd']     = '测试主管';
-$lang->user->roleList['top']    = '高层管理';
+$lang->user->roleList['top']    = '项目管理人员';
 $lang->user->roleList['others'] = '其他';
 
 $lang->user->genderList['m'] = '男';
@@ -142,7 +142,7 @@ $lang->user->statusList['delete'] = '删除';
 
 $lang->user->personalData['createdTodo']  = '创建的待办数';
 $lang->user->personalData['createdStory'] = "创建的{$lang->storyCommon}数";
-$lang->user->personalData['finishedTask'] = '完成的任务数';
+$lang->user->personalData['finishedTask'] = '完成的子任务数';
 $lang->user->personalData['resolvedBug']  = '解决的Bug数';
 $lang->user->personalData['createdCase']  = '创建的用例数';
 

@@ -32,7 +32,7 @@ class taskModel extends model
         $this->loadModel('file');
         $task = fixer::input('post')
             ->setDefault('project', (int)$projectID)
-            ->setDefault('estimate, left, story', 0)
+            ->setDefault('story', 0)
             ->setDefault('status', 'wait')
             ->setIF($this->post->estimate != false, 'left', $this->post->estimate)
             ->setIF($this->post->story != false, 'storyVersion', $this->loadModel('story')->getVersion($this->post->story))
@@ -1210,10 +1210,11 @@ class taskModel extends model
                 $earliestTime = $record->dates[$id];
             }
 
-            if(!empty($record->work[$id]) or !empty($record->consumed[$id]))
+            if(!empty($record->work[$id]) or !empty($record->consumed[$id]) or !empty($record->left[$id]))
             {
                 if(!$record->consumed[$id])   die(js::alert($this->lang->task->error->consumedThisTime));
                 if($record->left[$id] === '') die(js::alert($this->lang->task->error->left));
+                if(!$record->work[$id])       die(js::alert($this->lang->task->error->workEmpty));
 
                 $estimates[$id] = new stdclass();
                 $estimates[$id]->date     = $record->dates[$id];
@@ -2007,7 +2008,10 @@ class taskModel extends model
         $task        = $this->getById($oldEstimate->task);
         $this->dao->update(TABLE_TASKESTIMATE)->data($estimate)
             ->autoCheck()
+            ->check('date', 'notempty')
             ->check('consumed', 'notempty')
+            ->check('left', 'notempty')
+            ->check('work', 'notempty')
             ->where('id')->eq((int)$estimateID)
             ->exec();
 
@@ -2608,6 +2612,23 @@ class taskModel extends model
             return $this->session->taskQueryCondition;
         }
         return true;
+    }
+
+
+    /**
+     * Add task estimate.
+     *
+     * @param  object    $data
+     * @access public
+     * @return void
+     */
+    private function checkAccountWeakConsume($data, $hours)
+    {
+        // 获取当前星期日期，0是星期天，123分别是星期一，二，三
+        $nowweakday = date("w");
+        echo js::alert(sprintf($data->date));
+
+        //$thisWeakConsumeOfAccount = $this->dao->select()
     }
 
     /**

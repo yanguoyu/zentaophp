@@ -38,18 +38,22 @@
             </div>
             <?php common::printOrderLink('id', $orderBy, $vars, $lang->idAB);?>
           </th>
-          <th><?php common::printOrderLink('name', $orderBy, $vars, $lang->project->name);?></th>
-          <th class='w-150px'><?php common::printOrderLink('code', $orderBy, $vars, $lang->project->code);?></th>
-          <th class='thWidth'><?php common::printOrderLink('PM', $orderBy, $vars, $lang->project->PM);?></th>
-          <th class='w-90px'><?php common::printOrderLink('begin', $orderBy, $vars, $lang->project->begin);?></th>
-          <th class='w-90px'><?php common::printOrderLink('end', $orderBy, $vars, $lang->project->end);?></th>
-          <th class='w-90px'><?php common::printOrderLink('willEnd', $orderBy, $vars, $lang->project->willEnd);?></th>
-          <th class='w-90px'><?php common::printOrderLink('status', $orderBy, $vars, $lang->project->status);?></th>
-          <th class='w-70px'><?php echo $lang->project->totalEstimate;?></th>
-          <th class='w-70px'><?php echo $lang->project->totalConsumed;?></th>
-          <th class='w-70px'><?php echo $lang->project->totalLeft;?></th>
-          <th class='w-150px'><?php echo $lang->project->progress;?></th>
-          <th class='w-100px'><?php echo $lang->project->burn;?></th>
+          <th class='w-240px'><?php common::printOrderLink('name', $orderBy, $vars, $lang->project->name);?></th>      
+          <th class='w-100px text-center'><?php common::printOrderLink('type', $orderBy, $vars, $lang->project->type);?></th>
+          <th class='w-90px text-center'><?php common::printOrderLink('team', $orderBy, $vars, $lang->project->teamname);?></th>
+          <th class='w-110px text-center'><?php common::printOrderLink('productName', $orderBy, $vars, $lang->project->productName);?></th>
+          <th class='w-90px text-center'><?php common::printOrderLink('PM', $orderBy, $vars, $lang->project->PM);?></th>
+          <th class='w-90px text-center'><?php common::printOrderLink('RD', $orderBy, $vars, $lang->project->RD);?></th>
+          <th class='w-90px text-center'><?php common::printOrderLink('PO', $orderBy, $vars, $lang->project->PO);?></th>
+          <th class='w-110px text-center'><?php common::printOrderLink('begin', $orderBy, $vars, $lang->project->begin);?></th>
+          <th class='w-110px text-center'><?php common::printOrderLink('end', $orderBy, $vars, $lang->project->end);?></th>
+          <th class='w-110px text-center'><?php common::printOrderLink('willEnd', $orderBy, $vars, $lang->project->willEnd);?></th>
+          <th class='w-90px text-center'><?php common::printOrderLink('status', $orderBy, $vars, $lang->project->status);?></th>
+          <th class='w-50px text-center'><?php echo $lang->project->totalEstimate;?></th>
+          <th class='w-50px text-center'><?php echo $lang->project->totalConsumed;?></th>
+          <th class='w-50px text-center'><?php echo $lang->project->totalLeft;?></th>
+          <th class='w-150px text-center'><?php echo $lang->project->progress;?></th>
+          <!--<th class='w-100px'><?php echo $lang->project->burn;?></th>-->
           <?php if($canOrder):?>
           <th class='w-60px sort-default'><?php common::printOrderLink('order', $orderBy, $vars, $lang->project->orderAB);?></th>
           <?php endif;?>
@@ -71,21 +75,24 @@
           <td class='text-left' title='<?php echo $project->name?>'>
             <?php
             if(isset($project->delay)) echo "<span class='label label-danger label-badge'>{$lang->project->delayed}</span> ";
-            echo html::a($this->createLink('project', 'view', 'project=' . $project->id), $project->name);
-            ?>
+            echo html::a($this->createLink('project', 'view', 'project=' . $project->id), $project->name);?>
           </td>
-          <td class='text-left' title="<?php echo $project->code;?>"><?php echo $project->code;?></td>
-          <td><?php echo zget($users, $project->PM);?></td>
-          <td><?php echo $project->begin;?></td>
-          <td><?php echo $project->end;?></td>
-          <td><?php echo $project->willEnd;?></td>
+          <td class='text-center' title="<?php echo $project->type;?>"><?php echo $lang->project->typeList[$project->type];?></td>
+          <td class='text-center'><?php echo zget($users, $project->team);?></td>
+          <td class='text-center'><?php echo $project->productName;?></td>
+          <td class='text-center'><?php echo zget($users, $project->PM);?></td>          
+          <td class='text-center'><?php echo zget($users, $project->RD);?></td>
+          <td class='text-center'><?php echo zget($users, $project->PO);?></td>
+          <td class='text-center'><?php echo $project->begin;?></td>
+          <td class='text-center'><?php echo $project->end;?></td>
+          <td class='text-center'><?php echo $project->willEnd;?></td>
           <?php $projectStatus = $this->processStatus('project', $project);?>
-          <td class='c-status' title='<?php echo $projectStatus;?>'>
+          <td class='c-status text-center' title='<?php echo $projectStatus;?>'>
             <span class="status-project status-<?php echo $project->status?>"><?php echo $projectStatus;?></span>
           </td>
-          <td><?php echo $project->hours->totalEstimate;?></td>
-          <td><?php echo $project->hours->totalConsumed;?></td>
-          <td><?php echo $project->hours->totalLeft;?></td>
+          <td class='text-center'><?php echo $project->hours->totalEstimate;?></td>
+          <td class='text-center'><?php echo $project->hours->totalConsumed;?></td>
+          <td class='text-center'><?php echo $project->hours->totalLeft;?></td>
           <td class="c-progress">
             <div class="progress progress-text-left">
               <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="<?php echo $project->hours->progress;?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $project->hours->progress;?>%">
@@ -93,7 +100,7 @@
               </div>
             </div>
           </td>
-          <td id='spark-<?php echo $project->id?>' class='sparkline text-left no-padding' values='<?php echo join(',', $project->burns);?>'></td>
+          <!--<td id='spark-<?php echo $project->id?>' class='sparkline text-left no-padding' values='<?php echo join(',', $project->burns);?>'></td>-->
           <?php if($canOrder):?>
           <td class='sort-handler'><i class="icon icon-move"></i></td>
           <?php endif;?>

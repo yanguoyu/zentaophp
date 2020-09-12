@@ -308,6 +308,7 @@ $lang->resource->project->changewillend     = 'changewillendAction';
 $lang->resource->project->activate          = 'activateAction';
 $lang->resource->project->putoff            = 'delayAction';
 $lang->resource->project->suspend           = 'suspendAction';
+$lang->resource->project->cancel            = 'cancelAction';
 $lang->resource->project->close             = 'closeAction';
 $lang->resource->project->delete            = 'delete';
 $lang->resource->project->task              = 'task';
@@ -896,12 +897,14 @@ $lang->resource->report->productSummary   = 'productSummary';
 $lang->resource->report->bugCreate        = 'bugCreate';
 $lang->resource->report->bugAssign        = 'bugAssign';
 $lang->resource->report->workload         = 'workload';
+$lang->resource->report->workhour         = 'workhour';
 
 $lang->report->methodOrder[0]  = 'index';
 $lang->report->methodOrder[5]  = 'projectDeviation';
 $lang->report->methodOrder[10] = 'productSummary';
 $lang->report->methodOrder[15] = 'bugCreate';
 $lang->report->methodOrder[20] = 'workload';
+$lang->report->methodOrder[25] = 'workhour';
 
 /* Search. */
 $lang->resource->search = new stdclass();
@@ -1142,6 +1145,7 @@ $lang->changelog['3.2'][] = 'report-workload';
 $lang->changelog['3.2'][] = 'tree-fix';
 
 $lang->changelog['3.3'][] = 'report-bugAssign';
+$lang->changelog['3.3'][] = 'report-workhour';
 
 $lang->changelog['4.0.beta1'][] = 'user-batchCreate';
 $lang->changelog['4.0.beta1'][] = 'user-unlock';

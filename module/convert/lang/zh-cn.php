@@ -34,7 +34,7 @@ $lang->convert->questionTypeOfRedmine = 'Redmine中问题类型';
 $lang->convert->aimTypeOfZentao       = '转化为Zentao中的类型';
 
 $lang->convert->directionList['bug']   = 'Bug';
-$lang->convert->directionList['task']  = '任务';
+$lang->convert->directionList['task']  = '子任务';
 $lang->convert->directionList['story'] = $lang->storyCommon;
 
 $lang->convert->sourceList['BugFree'] = array('bugfree_1' => '1.x', 'bugfree_2' => '2.x');
@@ -80,7 +80,7 @@ $lang->convert->redmine->groups       = '用户分组';
 $lang->convert->redmine->products     = $lang->productCommon;
 $lang->convert->redmine->projects     = $lang->projectCommon;
 $lang->convert->redmine->stories      = $lang->storyCommon;
-$lang->convert->redmine->tasks        = '任务';
+$lang->convert->redmine->tasks        = '子任务';
 $lang->convert->redmine->bugs         = 'Bug';
 $lang->convert->redmine->productPlans = $lang->productCommon . '计划';
 $lang->convert->redmine->teams        = '团队';

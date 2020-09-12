@@ -34,7 +34,7 @@ $lang->todo->cycle        = "周期";
 $lang->todo->cycleConfig  = "周期设置";
 
 $lang->todo->reasonList['story'] = "转{$lang->storyCommon}";
-$lang->todo->reasonList['task']  = "转任务";
+$lang->todo->reasonList['task']  = "转子任务";
 $lang->todo->reasonList['bug']   = "转Bug";
 $lang->todo->reasonList['done']  = "完成";
 
@@ -88,7 +88,7 @@ $lang->todo->priList[4] = '最低';
 $lang->todo->typeList['custom']   = '自定义';
 $lang->todo->typeList['cycle']    = '周期';
 $lang->todo->typeList['bug']      = 'Bug';
-$lang->todo->typeList['task']     = $lang->projectCommon . '任务';
+$lang->todo->typeList['task']     = $lang->projectCommon . '子任务';
 $lang->todo->typeList['story']    = $lang->projectCommon . $lang->storyCommon;
 
 global $config;

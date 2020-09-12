@@ -52,7 +52,7 @@
           <nav class="panel-actions btn-toolbar"></nav>
         </div>
         <div data-ride='table'>
-          <table class='table table-condensed table-striped table-bordered table-fixed no-margin' id="workload">
+          <table class='table table-condensed table-striped table-bordered table-fixed no-margin' id='workload'>
             <thead>
               <tr class='colhead text-center'>
                 <th class="w-100px"><?php echo $lang->report->user;?></th>
