@@ -92,8 +92,8 @@ class projectModel extends model
             $projectIndex  = '<div class="btn-group angle-btn' . ($methodName == 'index' ? ' active' : '') . '"><div class="btn-group"><button data-toggle="dropdown" type="button" class="btn">' . $label . ' <span class="caret"></span></button>';
             $projectIndex .= '<ul class="dropdown-menu">';
             if(common::hasPriv('project', 'index'))  $projectIndex .= '<li>' . html::a(helper::createLink('project', 'index', 'locate=no'), '<i class="icon icon-home"></i> ' . $this->lang->project->index) . '</li>';
-            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'all', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allProjects) . '</li>';
-
+            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'allnotsprint', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allNotSprintProjects) . '</li>';
+            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'allsprint', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allSprintProjects) . '</li>';
             if(common::isTutorialMode())
             {
                 $wizardParams = helper::safe64Encode('');
@@ -859,7 +859,7 @@ class projectModel extends model
      * @access public
      * @return array
      */
-    public function getList($status = 'all', $limit = 0, $productID = 0, $branch = 0)
+    public function getList($status = 'all', $limit = 0, $productID = 0, $branch = 0, $isSprint = null)
     {
         if($status == 'involved') return $this->getInvolvedList($status, $limit, $productID, $branch);
 
@@ -871,6 +871,8 @@ class projectModel extends model
                 ->where('t1.product')->eq($productID)
                 ->andWhere('t2.deleted')->eq(0)
                 ->andWhere('t2.iscat')->eq(0)
+                ->beginIF($isSprint == true)->andWhere('t2.type')->eq('sprint')->fi()	
+                ->beginIF($isSprint == false)->andWhere('t2.type')->ne('sprint')->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.status')->notIN('done,closed,suspended')->fi()
                 ->beginIF($status == 'undone')->andWhere('t2.status')->notIN('done,closed')->fi()
@@ -885,6 +887,8 @@ class projectModel extends model
         {
             return $this->dao->select('*, IF(INSTR(" done,closed", status) < 2, 0, 1) AS isDone')->from(TABLE_PROJECT)->where('iscat')->eq(0)
                 ->beginIF($status == 'undone')->andWhere('status')->notIN('done,closed')->fi()
+                ->beginIF($isSprint == true)->andWhere('type')->eq('sprint')->fi()	
+                ->beginIF($isSprint == false)->andWhere('type')->ne('sprint')->fi()
                 ->beginIF($status == 'delayed')->andWhere('end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('status')->notIN('done,closed,suspended')->fi()
                 ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed')->andWhere('status')->in($status)->fi()
@@ -986,10 +990,10 @@ class projectModel extends model
      * @access public
      * @return void
      */
-    public function getProjectStats($status = 'undone', $productID = 0, $productName = null, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null)
+    public function getProjectStats($status = 'undone', $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null, $isSprint = null)
     {
         /* Init vars. */
-        $projects = $this->getList($status, 0, $productID, $productName, $branch);
+        $projects = $this->getList($status, 0, $productID, $branch, $isSprint);
         $projects = $this->dao->select('t1.*,t3.name AS productName')->from(TABLE_PROJECT)->alias('t1')
             ->leftjoin(TABLE_PROJECTPRODUCT)->alias('t2')->on('t1.id = t2.project')
             ->leftjoin(TABLE_PRODUCT)->alias('t3')->on('t2.product = t3.id')
