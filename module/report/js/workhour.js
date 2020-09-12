@@ -35,8 +35,8 @@ $(function()
         showMeridian: 1,
         minView: 2,
         format: 'yyyy-mm-dd',
-        minDate: '2019/01/01',
-        maxDate: '2021/01/01',
+        startDate: '2019/01/01',
+        endDate: new Date(),
     };
     $('input#begin,input#end').fixedDate().datetimepicker(options);
 });

@@ -22,20 +22,20 @@
       <table class='table table-form'>
         <tr>
           <th class='w-80px'><?php echo $lang->task->date;?></th>
-          <td class='w-p45'><?php echo html::input('date', $estimate->date, 'class="form-control form-date"');?></td>
+          <td class='w-p45'><?php echo html::input('date', $estimate->date, 'class="form-control form-date"required');?></td>
           <td></td>
         </tr>  
         <tr>
           <th><?php echo $lang->task->record;?></th>
-          <td><?php echo html::input('consumed', $estimate->consumed, 'class="form-control"');?></td>
+          <td><?php echo html::input('consumed', $estimate->consumed, 'class="form-control" required');?></td>
         </tr>
         <tr>
           <th><?php echo $lang->task->left;?></th>
-          <td><?php echo html::input('left', $estimate->left, 'class="form-control"');?></td>
+          <td><?php echo html::input('left', $estimate->left, 'class="form-control" required');?></td>
         </tr>
         <tr>
           <th><?php echo $lang->comment;?></th>
-          <td colspan='2'><?php echo html::textarea('work', $estimate->work, "class=form-control");?></td>
+          <td colspan='2'><?php echo html::textarea('work', $estimate->work, "class='form-control'required");?></td>
         </tr>  
         <tr>
           <td colspan='3' class='text-center form-actions'><?php echo html::submitButton() . html::backButton();?></td>

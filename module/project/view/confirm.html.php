@@ -28,31 +28,35 @@
         <?php $this->printExtendFields($project, 'table', 'columns=2');?>
         <tr>
           <th><?php echo $lang->project->teamname;?></th>
-          <td colspan='2'><?php echo html::input('team', '', "class='form-control'");?></td>
+          <td colspan='2'><?php echo html::input('team', '', "class='form-control' required");?></td>
         </tr>
-        <tr>
+   <tr>
           <th><?php echo $lang->project->PO;?></th>
-          <td colspan='2'><?php echo html::select('PO', $poUsers, $project->PO, "class='form-control chosen'");?></td>
-        </tr>
-        <tr>
-          <th><?php echo $lang->project->QD;?></th>
-          <td colspan='2'>
-            <?php echo html::select('QD', $qdUsers, $project->QD, "class='form-control chosen'");?>
-          </td>
+          <td colspan='2'><?php echo html::select('PO', $poUsers, $project->PO, "class='form-control chosen' required");?></td>
         </tr>
         <tr>
           <th><?php echo $lang->project->PM;?></th>
-          <td colspan='2'><?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen'");?></td>
+          <td colspan='2'><?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen' required");?></td>
         </tr>
+<?php
+/**       
+	  <tr>
+         <th><?php echo $lang->project->QD;?></th>
+          <td colspan='2'>
+            <?php echo html::select('QD', $qdUsers, $project->QD, "class='form-control chosen'");?>
+          </td>
+       </tr>
+ */
+?>
         <tr>
           <th><?php echo $lang->project->RD;?></th>
           <td colspan='2'>
-            <?php echo html::select('RD', $rdUsers, $project->RD, "class='form-control chosen'");?>
+            <?php echo html::select('RD', $rdUsers, $project->RD, "class='form-control chosen' required");?>
           </td>
         </tr>
         <tr>
           <th><?php echo $lang->comment;?></th>
-          <td colspan='2'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+          <td colspan='2'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true' required");?></td>
         </tr>
         <tr>
           <td colspan='3' class='text-center form-actions'><?php echo html::submitButton($lang->project->confirm) . ' ' .  html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>

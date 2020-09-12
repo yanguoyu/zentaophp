@@ -1,19 +1,24 @@
 <?php
 $config->project = new stdclass();
-$config->project->defaultWorkhours = '7.0';
+$config->project->defaultWorkhours = '8.0';
 $config->project->orderBy          = 'isDone,status,order_desc';
 $config->project->maxBurnDay       = '31';
 $config->project->weekend          = '2';
 
 $config->project->list = new stdclass();
-$config->project->list->exportFields = 'id,name,code,PM,end,status,totalEstimate,totalConsumed,totalLeft,progress';
+$config->project->list->exportFields = 'id,name,code,type,teamname,productName,PO,PM,RD,begin,end,willEnd,status,totalEstimate,totalConsumed,totalLeft,progress';
 
 global $lang, $app;
 $app->loadLang('task');
 $config->project->create = new stdclass();
 $config->project->edit   = new stdclass();
-$config->project->create->requiredFields = 'name,code,begin,end';
-$config->project->edit->requiredFields   = 'name,code,begin,end';
+
+$config->project->create->requiredFields          = 'name,code,begin,end';
+$config->project->edit->requiredFields            = 'name,code,begin,end';
+$config->project->confirm->requiredFields         = 'PO,PM,RD';
+$config->project->changewillend->requiredFields   = 'willEnd';
+$config->project->start->requiredFields           = 'begin,end';
+$config->project->putoff->requiredFields          = 'begin,end';
 
 $config->project->customBatchEditFields = 'days,type,teamname,status,desc,PO,QD,PM,RD';
 
@@ -23,6 +28,7 @@ $config->project->custom->batchEditFields = 'days,status,PM';
 $config->project->editor = new stdclass();
 $config->project->editor->confirm  = array('id' => 'comment', 'tools' => 'simpleTools');
 $config->project->editor->changewillend  = array('id' => 'comment', 'tools' => 'simpleTools');
+$config->project->editor->cancel   = array('id' => 'comment', 'tools' => 'simpleTools');
 $config->project->editor->create   = array('id' => 'desc',    'tools' => 'simpleTools');
 $config->project->editor->edit     = array('id' => 'desc',    'tools' => 'simpleTools');
 $config->project->editor->putoff   = array('id' => 'comment', 'tools' => 'simpleTools');
