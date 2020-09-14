@@ -90,6 +90,8 @@ $lang->action->objectTypes['webhook']     = 'Webhook';
 
 /* 用来描述操作历史记录。*/
 $lang->action->desc = new stdclass();
+$lang->action->desc->pass           = '$date, 由 <strong>$actor</strong> 审批通过。' . "\n";
+$lang->action->desc->back           = '$date, 由 <strong>$actor</strong> 驳回审批。' . "\n";
 $lang->action->desc->common         = '$date, <strong>$action</strong> by <strong>$actor</strong>。' . "\n";
 $lang->action->desc->extra          = '$date, <strong>$action</strong> as <strong>$extra</strong> by <strong>$actor</strong>。' . "\n";
 $lang->action->desc->opened         = '$date, 由 <strong>$actor</strong> 创建。' . "\n";
@@ -114,6 +116,9 @@ $lang->action->desc->confirmed      = '$date, 由 <strong>$actor</strong> 确认
 $lang->action->desc->caseconfirmed  = '$date, 由 <strong>$actor</strong> 确认用例变动，最新版本为<strong>#$extra</strong>。' . "\n";
 $lang->action->desc->bugconfirmed   = '$date, 由 <strong>$actor</strong> 确认Bug。' . "\n";
 $lang->action->desc->frombug        = '$date, 由 <strong>$actor</strong> Bug转化而来，Bug编号为 <strong>$extra</strong>。';
+$lang->action->desc->startedapprove = '$date, 由 <strong>$actor</strong> 发起审批。' . "\n";
+$lang->action->desc->approveback    = '$date, 由 <strong>$actor</strong> 驳回审批。' . "\n";
+$lang->action->desc->approvepass    = '$date, 由 <strong>$actor</strong> 审批通过。' . "\n";
 $lang->action->desc->started        = '$date, 由 <strong>$actor</strong> 启动。' . "\n";
 $lang->action->desc->restarted      = '$date, 由 <strong>$actor</strong> 继续。' . "\n";
 $lang->action->desc->delayed        = '$date, 由 <strong>$actor</strong> 延期。' . "\n";

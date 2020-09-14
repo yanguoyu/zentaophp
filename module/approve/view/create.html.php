@@ -44,11 +44,10 @@
         <tr>
           <th class='w-120px'><?php echo $lang->approve->name;?></th>
           <td class="col-main"><?php echo html::input('name', $project->name, "class='form-control' required disabled");?></td>
-          <td></td><td></td>
         </tr>
         <tr>
           <th><?php echo $lang->approve->type;?></th>
-          <td><?php echo html::select('type', $lang->approve->typeList, $type, "class='form-control' onchange='showTypeTips()' disabled");?></td>
+          <td><?php echo html::select('type', $lang->approve->typeList, $type, "class='form-control' disabled");?></td>
         </tr>
         <tr>
           <th><?php echo $lang->approve->dateRange;?></th>
@@ -60,10 +59,6 @@
             </div>
           </td>
           <td colspan='2'><?php echo html::radio('delta', $lang->approve->endList , '', "onclick='computeEndDate(this.value)'");?></td>
-        </tr>
-        <tr class='hide'>
-          <th><?php echo $lang->approve->status;?></th>
-          <td><?php echo html::hidden('status', 'doing');?></td>
         </tr>
         <?php $this->printExtendFields('', 'table');?>
         <tr>
@@ -79,6 +74,15 @@
           <td colspan='3'>
             <?php echo $this->fetch('user', 'ajaxPrintTemplates', 'type=approve&link=desc');?>
             <?php echo html::textarea('desc', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?>
+          </td>
+        </tr>
+        <tr>
+          <th><?php echo $lang->approve->startApprove;?></th>
+          <td>
+            <div class="checkbox-primary">
+              <input type='checkbox' id='startApprove' name='startApprove' value='1' checked />
+              <label for='startApprove'><?php echo $lang->approve->startApprove;?></label>
+            </div>
           </td>
         </tr>
         <tr>

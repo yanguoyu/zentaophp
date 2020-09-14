@@ -260,6 +260,13 @@ $lang->project->subMenu->qa->testtask = array('link' => '测试单|project|testt
 
 $lang->project->dividerMenu = ',story,team,product,';
 
+/* 审批视图菜单设置。*/
+$lang->approve = new stdclass();
+$lang->approve->menu = new stdclass();
+
+$lang->approve->menu->view    = array('link' => '概况|approve|all|all=all&projectID=%s');
+
+
 $lang->task  = new stdclass();
 $lang->build = new stdclass();
 $lang->task->menu  = $lang->project->menu;

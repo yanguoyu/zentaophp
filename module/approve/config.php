@@ -31,7 +31,8 @@ $config->approve->editor->close    = array('id' => 'comment', 'tools' => 'simple
 $config->approve->editor->start    = array('id' => 'comment', 'tools' => 'simpleTools');
 $config->approve->editor->suspend  = array('id' => 'comment', 'tools' => 'simpleTools');
 $config->approve->editor->tree     = array('id' => 'comment', 'tools' => 'simpleTools');
-$config->approve->editor->view     = array('id' => 'comment,lastComment', 'tools' => 'simpleTools');
+$config->approve->editor->view     = array('id' => 'desc,comment,lastComment', 'tools' => 'simpleTools');
+$config->approve->editor->approve  = array('id' => 'comment', 'tools' => 'simpleTools');
 
 $config->approve->search['module']                   = 'task';
 $config->approve->search['fields']['name']           = $lang->task->name;

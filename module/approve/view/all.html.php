@@ -14,15 +14,19 @@
 <div id='mainMenu' class='clearfix'>
   <div class='btn-toolbar pull-left'>
     <?php foreach($lang->approve->featureBar['all'] as $key => $label):?>
-    <?php echo html::a(inlink('all', "status=$key&projectID=$project->id&orderBy=$orderBy&productID=$productID"), "<span class='text'>{$label}</span>", '', "class='btn btn-link' id='{$key}Tab'");?>
+    <?php echo html::a(inlink('all', "status=$key&projectID=$projectID&orderBy=$orderBy&productID=$productID"), "<span class='text'>{$label}</span>", '', "class='btn btn-link' id='{$key}Tab'");?>
     <?php endforeach;?>
-    <div class='input-control space w-180px'>
-      <?php echo html::select('product', $products, $productID, "class='chosen form-control' onchange='byProduct(this.value, $projectID, \"$status\")'");?>
-    </div>
+    <?php if($projectID == 0):?>
+      <div class='input-control space w-180px'>
+        <?php echo html::select('product', $products, $productID, "class='chosen form-control' onchange='byProduct(this.value, $projectID, \"$status\")'");?>
+      </div>
+    <?php endif;?>
   </div>
   <div class='btn-toolbar pull-right'>
-    <?php common::printLink('project', 'export', "status=$status&productID=$productID&orderBy=$orderBy", "<i class='icon-export muted'> </i>" . $lang->export, '', "class='btn btn-link export'")?>
-    <?php common::printLink('project', 'create', '', "<i class='icon-plus'></i> " . $lang->approve->create, '', "class='btn btn-primary'")?>
+    <?php common::printLink('approve', 'export', "status=$status&productID=$productID&orderBy=$orderBy", "<i class='icon-export muted'> </i>" . $lang->export, '', "class='btn btn-link export'")?>
+    <?php if($projectID != 0):?>
+      <?php common::printLink('approve', 'create', "projectId=$projectID", "<i class='icon-plus'></i> " . $lang->approve->create, '', "class='btn btn-primary'")?>
+    <?php endif;?>
   </div>
 </div>
 <div id='mainContent'>
@@ -42,6 +46,8 @@
           <th><?php common::printOrderLink('type', $orderBy, $vars, $lang->approve->type);?></th>
           <th><?php common::printOrderLink('begin', $orderBy, $vars, $lang->approve->begin);?></th>
           <th><?php common::printOrderLink('end', $orderBy, $vars, $lang->approve->end);?></th>
+          <th><?php common::printOrderLink('openedBy', $orderBy, $vars, $lang->approve->openedBy);?></th>
+          <th><?php common::printOrderLink('assignedTo', $orderBy, $vars, $lang->approve->assignedTo);?></th>
           <th><?php common::printOrderLink('PM', $orderBy, $vars, $lang->approve->PM);?></th>
           <th><?php common::printOrderLink('LD', $orderBy, $vars, $lang->approve->LD);?></th>
           <th><?php common::printOrderLink('status', $orderBy, $vars, $lang->approve->status);?></th>
@@ -63,12 +69,14 @@
           </td>
           <td class='text-left' title='<?php echo $project->name?>'>
             <?php
-            echo html::a($this->createLink('project', 'view', 'project=' . $project->id), $project->projectName);
+            echo html::a($this->createLink('project', 'view', 'project=' . $project->project), $project->projectName);
             ?>
           </td>
           <td><?php echo $lang->approve->typeList[$project->type];?></td>
           <td><?php echo $project->begin;?></td>
           <td><?php echo $project->end;?></td>
+          <td><?php echo zget($users, $project->openedBy);?></td>
+          <td><?php echo zget($users, $project->assignedTo);?></td>
           <td><?php echo zget($users, $project->PM);?></td>
           <td><?php echo zget($users, $project->LD);?></td>
           <?php $projectStatus = $this->processStatus('approve', $project);?>
@@ -77,8 +85,10 @@
           </td>
           <?php if($canOrder):?>
           <td class='datatable-cell c-actions'>
-            <?php common::printIcon('approve', 'edit',  "id=$project->id", $project, 'list', '', '', 'iframe', true); ?>
-            <?php common::printIcon('approve', 'approve',  "id=$project->id", $project, 'list', 'checked', '', 'iframe', true, '', $lang->approveCommon); ?>
+            <?php common::printIcon('approve', 'view',  "id=$project->id&projectId=$project->project", $project, 'list', 'eye', '', ''); ?>
+            <?php common::printIcon('approve', 'start',  "id=$project->id&projectId=$project->project", $project, 'list', 'play', '', 'iframe', true, '', $lang->startAction); ?>
+            <?php common::printIcon('approve', 'edit',  "id=$project->id&projectId=$project->project", $project, 'list', '', '', ''); ?>
+            <?php common::printIcon('approve', 'approve',  "id=$project->id&projectId=$project->project", $project, 'list', 'checked', '', 'iframe', true, '', $lang->approveCommon); ?>
           </td>
           <?php endif;?>
         </tr>

@@ -46,6 +46,7 @@ class approveModel extends model
     {
         /* Check the privilege. */
         $project = $this->getById($projectID);
+        $project->user = $this->app->user;
 
         /* Unset story, bug, build and testtask if type is ops. */
         if($project and $project->type == 'ops')
@@ -163,7 +164,7 @@ class approveModel extends model
         setCookie("lastProject", $projectID, $this->config->cookieLife, $this->config->webRoot, '', false, true);
         $currentProject = $this->getById($projectID);
 
-        $dropMenuLink = helper::createLink('project', 'ajaxGetDropMenu', "objectID=$projectID&module=$currentModule&method=$currentMethod&extra=$extra");
+        $dropMenuLink = helper::createLink('approve', 'ajaxGetDropMenu', "objectID=$projectID&module=$currentModule&method=$currentMethod&extra=$extra");
         $output  = "<div class='btn-group angle-btn'><div class='btn-group'><button data-toggle='dropdown' type='button' class='btn btn-limit' id='currentItem' title='{$currentProject->name}'>{$currentProject->name} <span class='caret'></span></button><div id='dropMenu' class='dropdown-menu search-list' data-ride='searchList' data-url='$dropMenuLink'>";
         $output .= '<div class="input-control search-box has-icon-left has-icon-right search-example"><input type="search" class="form-control search-input" /><label class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label><a class="input-control-icon-right search-clear-btn"><i class="icon icon-close icon-sm"></i></a></div>';
         $output .= "</div></div></div>";
@@ -268,15 +269,18 @@ class approveModel extends model
     {
         $this->lang->approve->team = $this->lang->approve->teamname;
         $approve = fixer::input('post')
-            ->setDefault('status', 'doing')
+            ->setDefault('status', $this->post->startApprove == '1' ? 'doing' : 'wait')
             ->setIF($this->post->acl != 'custom', 'whitelist', '')
             ->setDefault('openedBy', $this->app->user->account)
             ->setDefault('openedDate', helper::now())
+            ->setDefault('assignedTo', $this->post->startApprove == '1' ? $this->post->PM : $this->app->user->account)
+            ->setDefault('approveStep', 'PM')
+            ->setDefault('assignedDate', helper::now())
             ->setDefault('openedVersion', $this->config->version)
             ->setDefault('team', substr($this->post->name,0, 30))
             ->join('whitelist', ',')
             ->stripTags($this->config->approve->editor->create['id'], $this->config->allowedTags)
-            ->remove('products, workDays, delta, branch, uid, plans')
+            ->remove('products, workDays, delta, branch, uid, plans, startApprove')
             ->get();
         $approve->project = $projectID;
         $approve->type = $type;
@@ -304,63 +308,78 @@ class approveModel extends model
     }
 
     /**
+     * Edit a project.
+     *
+     * @param  int    $projectID
+     * @access public
+     * @return array
+     */
+    public function edit($approveId)
+    {
+        $approveId  = (int)$approveId;
+        $oldApprove = $this->dao->findById($approveId)->from(TABLE_APPROVE)->fetch();
+        $approve = fixer::input('post')
+            ->setDefault('status', $this->post->startApprove == '1' ? 'doing' : 'wait')
+            ->setDefault('assignedTo', $this->post->startApprove == '1' ? $this->post->PM : $this->app->user->account)
+            ->setDefault('assignedDate', helper::now())
+            ->stripTags($this->config->approve->editor->edit['id'], $this->config->allowedTags)
+            ->remove('startApprove')
+            ->get();
+        $approve = $this->loadModel('file')->processImgURL($approve, $this->config->approve->editor->edit['id'], $this->post->uid);
+        $this->dao->update(TABLE_APPROVE)->data($approve)
+            ->autoCheck()
+            ->batchcheck($this->config->approve->create->requiredFields, 'notempty')
+            ->where('id')->eq($approveId)
+            ->exec();
+        if(!dao::isError())
+        {
+            $this->file->updateObjectID($this->post->uid, $approveId, 'approve');
+            return common::createChanges($oldApprove, $approve);
+        }
+    }
+
+    /**
      * Update a project.
      *
      * @param  int    $projectID
      * @access public
      * @return array
      */
-    public function update($projectID)
+    public function update($approveId)
     {
-        $projectID  = (int)$projectID;
-        $oldProject = $this->dao->findById($projectID)->from(TABLE_APPROVE)->fetch();
-        $team = $this->getTeamMemberPairs($projectID);
-        $this->lang->approve->team = $this->lang->approve->teamname;
-        $projectID = (int)$projectID;
-        $project = fixer::input('post')
-            ->setIF($this->post->begin == '0000-00-00', 'begin', '')
-            ->setIF($this->post->end   == '0000-00-00', 'end', '')
-            ->setIF($this->post->acl != 'custom', 'whitelist', '')
-            ->setDefault('team', $this->post->name)
-            ->join('whitelist', ',')
-            ->stripTags($this->config->project->editor->edit['id'], $this->config->allowedTags)
-            ->remove('products, branch, uid, plans')
-            ->get();
-        $project = $this->loadModel('file')->processImgURL($project, $this->config->project->editor->edit['id'], $this->post->uid);
-        $this->dao->update(TABLE_APPROVE)->data($project)
-            ->autoCheck($skipFields = 'begin,end')
-            ->batchcheck($this->config->project->edit->requiredFields, 'notempty')
-            ->checkIF($project->begin != '', 'begin', 'date')
-            ->checkIF($project->end != '', 'end', 'date')
-            ->checkIF($project->end != '', 'end', 'gt', $project->begin)
-            ->check('name', 'unique', "id!=$projectID and deleted='0'")
-            ->check('code', 'unique', "id!=$projectID and deleted='0'")
-            ->where('id')->eq($projectID)
-            ->limit(1)
-            ->exec();
-        foreach($project as $fieldName => $value)
-        {
-            if($fieldName == 'PO' or $fieldName == 'PM' or $fieldName == 'QD' or $fieldName == 'RD' )
-            {
-                if(!empty($value) and !isset($team[$value]))
-                {
-                    $member = new stdclass();
-                    $member->root    = (int)$projectID;
-                    $member->account = $value;
-                    $member->join    = helper::today();
-                    $member->role    = $this->lang->approve->$fieldName;
-                    $member->days    = $project->days;
-                    $member->type    = 'project';
-                    $member->hours   = $this->config->project->defaultWorkhours;
-                    $this->dao->replace(TABLE_TEAM)->data($member)->exec();
-                }
-            }
+        $approveId  = (int)$approveId;
+        $oldApprove = $this->dao->findById($approveId)->from(TABLE_APPROVE)->fetch();
+        $status = $oldApprove->status;
+        $assignedTo = $oldApprove->assignedTo;
+        $approveStep = $oldApprove->approveStep;
+        // 驳回
+        if ($this->post->result == 'back') {
+            $status = 'back';
+            $assignedTo = $oldApprove->openedBy;
+        // 分管领导审批
+        } else if ('LD' == $oldApprove->approveStep) {
+            $status = 'finish';
+        } else {
+            $status = 'doing';
+            $approveStep = 'LD';
+            $assignedTo = $oldApprove->LD;
         }
+        $approve = fixer::input('post')
+            ->setForce('status', $status)
+            ->setForce('assignedTo', $assignedTo)
+            ->setForce('approveStep', $approveStep)
+            ->setDefault('assignedDate', helper::now())
+            ->remove('result,comment')
+            ->get();
+        $approve = $this->loadModel('file')->processImgURL($approve, $this->config->approve->editor->edit['id'], $this->post->uid);
+        $this->dao->update(TABLE_APPROVE)->data($approve)
+            ->autoCheck()
+            ->where('id')->eq($approveId)
+            ->exec();
         if(!dao::isError())
         {
-            $this->file->updateObjectID($this->post->uid, $projectID, 'project');
-            if($project->acl != 'open' and ($project->acl != $oldProject->acl or $project->whitelist != $oldProject->whitelist)) $this->loadModel('user')->updateUserView($projectID, 'project');
-            return common::createChanges($oldProject, $project);
+            $this->file->updateObjectID($this->post->uid, $approveId, 'approve');
+            return common::createChanges($oldApprove, $approve);
         }
     }
 
@@ -507,20 +526,21 @@ class approveModel extends model
      * @access public
      * @return void
      */
-    public function start($projectID)
+    public function start($approveId)
     {
-        $oldProject = $this->getById($projectID);
-        $now        = helper::now();
-        $project = fixer::input('post')
+        $oldApprove = $this->getApproveById($approveId);
+        $approve = fixer::input('post')
+            ->setDefault('assignedTo', $oldApprove->PM)
+            ->setDefault('assignedDate', helper::now())
             ->setDefault('status', 'doing')
             ->remove('comment')->get();
 
-        $this->dao->update(TABLE_APPROVE)->data($project)
+        $this->dao->update(TABLE_APPROVE)->data($approve)
             ->autoCheck()
-            ->where('id')->eq((int)$projectID)
+            ->where('id')->eq((int)$approveId)
             ->exec();
 
-        if(!dao::isError()) return common::createChanges($oldProject, $project);
+        if(!dao::isError()) return common::createChanges($oldApprove, $approve);
     }
 
     /**
@@ -720,13 +740,14 @@ class approveModel extends model
      * @access public
      * @return array
      */
-    public function getList($status = 'all', $limit = 0, $productID = 0, $branch = 0, $isSprint = null)
+    public function getList($status = 'all', $limit = 0, $projectID, $productID = 0, $branch = 0, $isSprint = null)
     {
         if($productID != 0)
         {
             return $this->dao->select('t2.*')->from(TABLE_PROJECTPRODUCT)->alias('t1')
-                ->leftJoin(TABLE_APPROVE)->alias('t2')->on('t1.project = t2.id')
+                ->leftJoin(TABLE_APPROVE)->alias('t2')->on('t2.project = t1.project')
                 ->where('t1.product')->eq($productID)
+                ->beginIf($projectID != 0)->andWhere('t1.project')->eq($projectID)->fi()
                 ->andWhere('t2.deleted')->eq(0)
                 ->andWhere('t2.iscat')->eq(0)
                 ->beginIf($status != 'all')->andWhere('t2.status')->eq($status)->fi()
@@ -738,8 +759,9 @@ class approveModel extends model
         }
         else
         {
-            return $this->dao->select('*, IF(INSTR(" done,closed", status) < 2, 0, 1) AS isDone')->from(TABLE_APPROVE)
+            return $this->dao->select('*')->from(TABLE_APPROVE)
                 ->where('iscat')->eq(0)
+                ->beginIf($projectID != 0)->andWhere('project')->eq($projectID)->fi()
                 ->beginIf($status != 'all')->andWhere('status')->eq($status)->fi()
                 ->beginIF(!$this->app->user->admin)->andWhere('id')->in($this->app->user->view->projects)->fi()
                 ->andWhere('deleted')->eq(0)
@@ -839,16 +861,19 @@ class approveModel extends model
      * @access public
      * @return void
      */
-    public function getApproveStats($status = 'undone', $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null)
+    public function getApproveStats($status = 'all', $projectID = 0, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null)
     {
         /* Init vars. */
-        $approves = $this->getList($status, 0, $productID, $branch);
+        $approves = $this->getList($status, 0, $projectID, $productID, $branch);
         $approves = $this->dao->select('t1.*, t2.name as projectName')->from(TABLE_APPROVE)->alias('t1')
             ->leftJoin(TABLE_PROJECT)->alias('t2')->on('t1.project = t2.id')
             ->where('t1.id')->in(array_keys($approves))
             ->orderBy($orderBy)
             ->page($pager)
-            ->fetchAll('t1.id');
+            ->fetchAll('id');
+        foreach($approves as $id => $approve) {
+            $approve->user = $this->app->user;
+        }
 
         return $approves;
     }
@@ -948,8 +973,44 @@ class approveModel extends model
         $project = $this->loadModel('file')->replaceImgURL($project, 'desc');
         if($setImgSize) $project->desc = $this->file->setImgSize($project->desc);
 
+        $tasks = $this->dao->select('id, project, estimate, consumed, `left`, status, closedReason')
+                    ->from(TABLE_TASK)
+                    ->where('project')->eq($projectID)
+                    ->andWhere('parent')->lt(1)
+                    ->andWhere('deleted')->eq(0)
+                    ->fetchAll();
+        /* Compute totalEstimate, totalConsumed, totalLeft. */
+        $totalLeft = 0;
+        foreach($tasks as $task)
+        {
+            if($task->status != 'cancel' and $task->status != 'closed') $totalLeft += $task->left;
+        }
+        $totalLeft     = round($totalLeft, 1);
+        $project->tasks      = $tasks;
+        $project->totalLeft  = $totalLeft;
+        $project->noLeftHour = $totalLeft <= 0;
         return $project;
     }
+
+    /**
+     * Get approveId by id.
+     *
+     * @param  int    $approveId
+     * @param  bool   $setImgSize
+     * @access public
+     * @return void
+     */
+    public function getApproveById($approveId, $setImgSize = false)
+    {
+
+        $approve = $this->dao->findById((int)$approveId)->from(TABLE_APPROVE)->fetch();
+        if(!$approve) return false;
+        $approve = $this->loadModel('file')->replaceImgURL($approve, 'desc');
+        if($setImgSize) $approve->desc = $this->file->setImgSize($approve->desc);
+
+        return $approve;
+    }
+
 
     /**
      * Get the default managers for a project from it's related products.
@@ -1996,11 +2057,9 @@ class approveModel extends model
     {
         $action = strtolower($action);
 
-        if($action == 'start')    return $project->status == 'wait';
-        if($action == 'close')    return $project->status != 'closed';
-        if($action == 'suspend')  return $project->status == 'wait' or $project->status == 'doing';
-        if($action == 'putoff')   return $project->status == 'wait' or $project->status == 'doing';
-        if($action == 'activate') return $project->status == 'suspended' or $project->status == 'closed';
+        $isAssignToUser = $project->user->account == $project->assignedTo;
+        if($action == 'start' or $action == 'edit')    return ($project->status == 'wait' or $project->status == 'back') and $isAssignToUser;
+        if($action == 'approve') return $project->status == 'doing' and $isAssignToUser;
 
         return true;
     }
@@ -2016,33 +2075,16 @@ class approveModel extends model
      */
     public function getProjectLink($module, $method, $extra)
     {
-        $link = '';
-        if($module == 'task' and ($method == 'view' || $method == 'edit' || $method == 'batchedit'))
-        {
-            $module = 'project';
-            $method = 'task';
+        $link = helper::createLink($module, $method, "status=all&projectID=%s");
+        if ($method == 'create') {
+            $link = helper::createLink($module, $method, "projectID=%s");
+        } elseif ($method == 'index') {
+            $link = helper::createLink($module, 'all', "status=all&projectID=%s");
         }
-        if($module == 'build' and ($method == 'edit' || $method= 'view'))
-        {
-            $module = 'project';
-            $method = 'build';
-        }
-
-        if($module == 'project' and $method == 'create') return;
         if($extra != '')
         {
-            $link = helper::createLink($module, $method, "projectID=%s&type=$extra");
+            $link = helper::createLink($module, $method, "status=all&projectID=%s&type=$extra");
         }
-        elseif($module == 'project' && ($method == 'index' or $method == 'all'))
-        {
-            $link = helper::createLink($module, 'task', "projectID=%s");
-        }
-        else
-        {
-            $link = helper::createLink($module, $method, "projectID=%s");
-        }
-
-        if($module == 'doc') $link = helper::createLink('doc', 'objectLibs', "type=project&objectID=%s&from=project");
         return $link;
     }
 

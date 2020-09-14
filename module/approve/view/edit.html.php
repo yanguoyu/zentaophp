@@ -27,19 +27,19 @@
       <table class='table table-form'>
         <tr>
           <th class='w-120px'><?php echo $lang->approve->name;?></th>
-          <td><?php echo html::input('name', $project->name, "class='form-control' required");?></td><td></td>
+          <td><?php echo html::input('name', $project->name, "class='form-control' required disabled");?></td><td></td>
         </tr>
         <tr>
-          <th><?php echo $lang->approve->code;?></th>
-          <td><?php echo html::input('code', $project->code, "class='form-control' required");?></td>
+          <th><?php echo $lang->approve->type;?></th>
+          <td><?php echo html::select('type', $lang->approve->typeList, $approve->type, "class='form-control' disabled");?></td>
         </tr>
         <tr>
           <th><?php echo $lang->approve->dateRange;?></th>
           <td>
             <div class='input-group'>
-              <?php echo html::input('begin', $project->begin, "class='form-control form-date' onchange='computeWorkDays()' required placeholder='" . $lang->approve->begin . "'");?>
+              <?php echo html::input('begin', $approve->begin, "class='form-control form-date' onchange='computeWorkDays()' required placeholder='" . $lang->approve->begin . "'");?>
               <span class='input-group-addon fix-border'><?php echo $lang->approve->to;?></span>
-              <?php echo html::input('end', $project->end, "class='form-control form-date' onchange='computeWorkDays()' required placeholder='" . $lang->approve->end . "'");?>
+              <?php echo html::input('end', $approve->end, "class='form-control form-date' onchange='computeWorkDays()' required placeholder='" . $lang->approve->end . "'");?>
               <div class='input-group-btn'>
                 <button type='button' class='btn dropdown-toggle' data-toggle='dropdown'><?php echo $lang->approve->byPeriod;?> <span class='caret'></span></button>
                 <ul class='dropdown-menu'>
@@ -52,116 +52,30 @@
           </td>
         </tr>
         <tr>
-          <th><?php echo $lang->approve->days;?></th>
-          <td>
-            <div class='input-group'>
-              <?php echo html::input('days', $project->days, "class='form-control'");?>
-              <span class='input-group-addon'><?php echo $lang->approve->day;?></span>
-            </div>
-          </td>
-        </tr>
-        <?php if(!$isSprint):?>
-        <tr>
-          <th><?php echo $lang->approve->type;?></th>
-          <td><?php echo html::select('type', $lang->approve->typeList, $project->type, "class='form-control'");?></td>
-        </tr>
-        <?php endif;?>
-        <tr>
-          <th><?php echo $lang->approve->teamname;?></th>
-          <td><?php echo html::input('team', $project->team, "class='form-control'");?></td>
+          <th><?php echo $lang->approve->projectManager;?></th>
+          <td colspan='1'><?php echo html::select('PM', $pmUsers, $approve->PM, "class='form-control chosen'");?></td>
         </tr>
         <tr>
-          <th><?php echo $lang->approve->status;?></th>
-          <td><?php echo html::select('status', $lang->approve->statusList, $project->status, "class='form-control'");?></td>
-        </tr>
-        <?php if($config->global->flow == 'onlyTask'):?>
-        <tr>
-          <th><?php echo $lang->approve->owner;?></th>
-          <td><?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen'");?></td>
-        </tr>
-        <?php else:?>
-        <tr>
-          <th rowspan='2'><?php echo $lang->approve->owner;?></th>
-          <td>
-            <div class='input-group'>
-              <span class='input-group-addon'><?php echo $lang->approve->PO;?></span>
-              <?php echo html::select('PO', $poUsers, $project->PO, "class='form-control chosen'");?>
-            </div>
-          </td>
-          <td>
-            <div class='input-group'>
-              <span class='input-group-addon'><?php echo $lang->approve->QD;?></span>
-              <?php echo html::select('QD', $qdUsers, $project->QD, "class='form-control chosen'");?>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class='input-group'>
-              <span class='input-group-addon'><?php echo $lang->approve->PM;?></span>
-              <?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen'");?>
-            </div>
-          </td>
-          <td>
-            <div class='input-group'>
-              <span class='input-group-addon'><?php echo $lang->approve->RD;?></span>
-              <?php echo html::select('RD', $rdUsers, $project->RD, "class='form-control chosen'");?>
-            </div>
-          </td>
-        </tr>
-        <?php endif;?>
-        <tr <?php if($config->global->flow == 'onlyTask') echo "class='hidden'";?>>
-          <th><?php echo $lang->approve->manageProducts;?></th>
-          <td class='text-left' id='productsBox' colspan="2">
-            <div class='row'>
-              <?php $i = 0;?>
-              <?php foreach($linkedProducts as $product):?>
-              <div class='col-sm-4'>
-                <?php $hasBranch = $product->type != 'normal' and isset($branchGroups[$product->id]);?>
-                <div class="input-group<?php if($hasBranch) echo ' has-branch';?>">
-                  <?php echo html::select("products[$i]", $allProducts, $product->id, "class='form-control chosen' onchange='loadBranches(this)' data-last='" . $product->id . "'");?>
-                  <span class='input-group-addon fix-border'></span>
-                  <?php if($hasBranch) echo html::select("branch[$i]", $branchGroups[$product->id], $product->branch, "class='form-control chosen' onchange=\"loadPlans('#products{$i}', this.value)\"");?> 
-                </div>
-              </div>
-              <?php $i++;?>
-              <?php endforeach;?>
-              <div class='col-sm-4'>
-                <div class='input-group'>
-                  <?php echo html::select("products[$i]", $allProducts, '', "class='form-control chosen' onchange='loadBranches(this)'");?>
-                  <span class='input-group-addon fix-border'></span>
-                </div>
-              </div>
-            </div>
-          </td>
-        </tr>
-        <tr <?php if($config->global->flow == 'onlyTask') echo "class='hidden'";?>>
-          <th><?php echo $lang->approve->linkPlan;?></th>
-          <td id="plansBox" colspan="2">
-            <div class='row'>
-              <?php $i = 0;?>
-              <?php foreach($linkedProducts as $product):?>
-              <?php $plans = zget($productPlans, $product->id, array(0 => ''));?>
-              <div class="col-sm-4" id="plan<?php echo $i;?>"><?php echo html::select("plans[" . $product->id . "]", $plans, $product->plan, "class='form-control chosen'");?></div>
-              <?php $i++;?>
-              <?php endforeach;?>
-            </div>
-          </td>
+          <th><?php echo $lang->approve->leader;?></th>
+          <td colspan='1'><?php echo html::select('LD', $pmUsers, $approve->LD, "class='form-control chosen'");?></td>
         </tr>
         <tr>
           <th><?php echo $lang->approve->desc;?></th>
-          <td colspan='2'><?php echo html::textarea('desc', htmlspecialchars($project->desc), "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+          <td colspan='3'>
+            <?php echo $this->fetch('user', 'ajaxPrintTemplates', 'type=approve&link=desc');?>
+            <?php echo html::textarea('desc', htmlspecialchars($approve->desc), "rows='6' class='form-control kindeditor' hidefocus='true'");?>
+          </td>
         </tr>
-        <?php $this->printExtendFields($project, 'table');?>
         <tr>
-          <th><?php echo $lang->approve->acl;?></th>
-          <td colspan='2'><?php echo nl2br(html::radio('acl', $lang->approve->aclList, $project->acl, "onclick='setWhite(this.value);'", 'block'));?></td>
+          <th><?php echo $lang->approve->startApprove;?></th>
+          <td>
+            <div class="checkbox-primary">
+              <input type='checkbox' id='startApprove' name='startApprove' value='1' checked />
+              <label for='startApprove'><?php echo $lang->approve->startApprove;?></label>
+            </div>
+          </td>
         </tr>
-        <tr id='whitelistBox' <?php if($project->acl != 'custom') echo "class='hidden'";?>>
-          <th><?php echo $lang->approve->whitelist;?></th>
-          <td colspan='2'><?php echo html::checkbox('whitelist', $groups, $project->whitelist, '', '', 'inline');?></td>
-        </tr>
-        <tr><td colspan='3' class='text-center form-actions'><?php echo html::submitButton() . ' ' . html::backButton();?></td></tr>
+        <tr><td colspan='4' class='text-center form-actions'><?php echo html::submitButton() . ' ' . html::backButton();?></td></tr>
       </table>
     </form>
   </div>

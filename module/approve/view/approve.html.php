@@ -12,14 +12,13 @@
 ?>
 <?php include '../../common/view/header.html.php';?>
 <?php include '../../common/view/kindeditor.html.php';?>
-<?php js::import($jsRoot . 'misc/date.js');?>
 <div id='mainContent' class='main-content'>
   <div class='main-header'>
     <h2>
       <span class='prefix label-id'><strong><?php echo $project->id;?></strong></span>
       <?php echo isonlybody() ? ("<span title='$project->name'>" . $project->name . '</span>') : html::a($this->createLink('project', 'view', 'project=' . $project->id), $project->name, '_blank');?>
       <?php if(!isonlybody()):?>
-      <small><?php echo $lang->arrow . $lang->approve->start;?></small>
+      <small><?php echo $lang->arrow . $lang->approve->confirm;?></small>
       <?php endif;?>
     </h2>
   </div>
@@ -28,11 +27,19 @@
       <tbody>
         <?php $this->printExtendFields($project, 'table', 'columns=2');?>
         <tr>
-          <th><?php echo $lang->comment;?></th>
-          <td colspan='3'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+          <th><?php echo $lang->approve->type;?></th>
+          <td><?php echo html::select('type', $lang->approve->typeList, $approve->type, "class='form-control' disabled");?></td>
         </tr>
         <tr>
-          <td colspan='4' class='text-center form-actions'><?php echo html::submitButton($lang->approve->startAction) . ' ' .  html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>
+          <th><?php echo $lang->approve->result;?></th>
+          <td colspan='1'><?php echo html::select('result', $lang->approve->resultTypes, 'pass', "class='form-control chosen'");?></td>
+        </tr>
+        <tr>
+          <th><?php echo $lang->approve->commnet;?></th>
+          <td colspan='2'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
+        </tr>
+        <tr>
+          <td colspan='3' class='text-center form-actions'><?php echo html::submitButton() . ' ' .  html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>
         </tr>
       </tbody>
     </table>

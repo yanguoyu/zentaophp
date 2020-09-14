@@ -114,9 +114,10 @@ $lang->approve->basicInfo = '基本信息';
 $lang->approve->otherInfo = '其他信息';
 
 /* 字段取值列表。*/
-$lang->approve->statusList['wait']      = '待修改';
+$lang->approve->statusList['wait']      = '未发起';
+$lang->approve->statusList['back']      = '审批驳回';
 $lang->approve->statusList['doing']     = '审批中';
-$lang->approve->statusList['closed']    = '审批完成';
+$lang->approve->statusList['finish']    = '审批完成';
 
 $lang->approve->aclList['open']    = "默认设置(有{$lang->approveCommon}视图权限，即可访问)";
 $lang->approve->aclList['private'] = "私有{$lang->approveCommon}(只有{$lang->approveCommon}团队成员才能访问)";
@@ -149,7 +150,7 @@ $lang->approve->unlinkedProducts  = '未关联';
 $lang->approve->view              = "{$lang->approveCommon}概况";
 $lang->approve->confirmAction     = "确认{$lang->approveCommon}";
 $lang->approve->changewillendAction     = "预计完成{$lang->approveCommon}";
-$lang->approve->startAction       = "开始{$lang->approveCommon}";
+$lang->approve->startAction       = "发起{$lang->approveCommon}";
 $lang->approve->activateAction    = "激活{$lang->approveCommon}";
 $lang->approve->delayAction       = "延期{$lang->approveCommon}";
 $lang->approve->suspendAction     = "挂起{$lang->approveCommon}";
@@ -349,8 +350,9 @@ $lang->approve->featureBar['task']['status']       = $lang->approve->statusSelec
 
 $lang->approve->featureBar['all']['all']       = $lang->approve->all;
 $lang->approve->featureBar['all']['wait']      = $lang->approve->statusList['wait'];
-$lang->approve->featureBar['all']['doing'] = $lang->approve->statusList['doing'];
-$lang->approve->featureBar['all']['closed']    = $lang->approve->statusList['closed'];
+$lang->approve->featureBar['all']['back']      = $lang->approve->statusList['back'];
+$lang->approve->featureBar['all']['doing']     = $lang->approve->statusList['doing'];
+$lang->approve->featureBar['all']['finish']    = $lang->approve->statusList['finish'];
 
 $lang->approve->treeLevel = array();
 $lang->approve->treeLevel['all']   = '全部展开';
@@ -369,4 +371,11 @@ if($config->global->flow == 'onlyTask')
 $lang->approve->projectManager = '项目负责人';
 $lang->approve->leader = '业务分管领导';
 $lang->approve->operator = '操作';
+$lang->approve->openedBy       = '审批发起人';
+$lang->approve->assignedTo       = '当前指派人';
 $lang->approve->approve = $lang->approveCommon;
+$lang->approve->result = $lang->approveCommon . '结果   ';
+$lang->approve->resultTypes['pass']    = $lang->approveCommon . "通过";
+$lang->approve->resultTypes['back']  = $lang->approveCommon . "驳回";
+$lang->approve->commnet       = $lang->approveCommon . "意见";
+$lang->approve->startApprove = '自动发起审批';

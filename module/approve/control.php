@@ -1034,6 +1034,13 @@ class approve extends control
     public function create($projectID = '', $type = 'start')
     {
         $project = $this->approve->getById($projectID, true);
+        if ($project->status == 'noconfirm') {
+            $type = 'start';
+        } else if ($project->noLeftHour) {
+            $type = 'close';
+        } else {
+            $type = 'suspend';
+        }
 
         $name         = '';
         $code         = '';
@@ -1050,13 +1057,11 @@ class approve extends control
             $approveId = $this->approve->create($projectID, $type);
             if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
 
-            if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
-
             $this->loadModel('action')->create('approve', $approveId, 'opened', '', join(',', $_POST['products']));
 
             $this->executeHooks($approveId);
 
-            $this->send(array('result' => 'success', 'message' => $this->lang->saveSuccess, 'locate' => inlink('create', "approveId=$approveId")));
+            $this->send(array('result' => 'success', 'message' => $this->lang->saveSuccess, 'locate' => inlink('view', "approveId=$approveId&projectId=$projectID")));
         }
 
         if(strpos($this->config->custom->productProject, '_2')) 
@@ -1108,87 +1113,34 @@ class approve extends control
      * @access public
      * @return void
      */
-    public function edit($projectID, $action = 'edit', $extra = '')
+    public function edit($approveId, $projectID, $action = 'edit', $extra = '')
     {
         $browseProjectLink = $this->createLink('project', 'browse', "projectID=$projectID");
         if(!empty($_POST))
         {
-            $changes = $this->approve->update($projectID);
+            $changes = $this->approve->edit($approveId);
             if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
-
-            $this->approve->updateProducts($projectID);
-            if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
-            if($action == 'undelete')
-            {
-                $this->loadModel('action');
-                $this->dao->update(TABLE_APPROVE)->set('deleted')->eq(0)->where('id')->eq($projectID)->exec();
-                $this->dao->update(TABLE_ACTION)->set('extra')->eq(ACTIONMODEL::BE_UNDELETED)->where('id')->eq($extra)->exec();
-                $this->action->create('project', $projectID, 'undeleted');
-            }
             if($changes)
             {
-                $actionID = $this->loadModel('action')->create('project', $projectID, 'edited');
+                $actionID = $this->loadModel('action')->create('approve', $approveId, 'edited');
                 $this->action->logHistory($actionID, $changes);
             }
             $this->executeHooks($projectID);
-            $this->send(array('result' => 'success', 'message' => $this->lang->saveSuccess, 'locate' => inlink('view', "projectID=$projectID")));
+            $this->send(array('result' => 'success', 'message' => $this->lang->saveSuccess, 'locate' => inlink('view', "approveId=$approveId&projectId=$projectID")));
         }
 
         /* Set menu. */
         $this->approve->setMenu($this->projects, $projectID);
 
-        $projects = array('' => '') + $this->projects;
         $project  = $this->approve->getById($projectID);
-        $managers = $this->approve->getDefaultManagers($projectID);
-
-        /* Remove current project from the projects. */
-        unset($projects[$projectID]);
-
+        $approve  = $this->approve->getApproveById($approveId);
         $title      = $this->lang->approve->edit . $this->lang->colon . $project->name;
-        $position[] = html::a($browseProjectLink, $project->name);
-        $position[] = $this->lang->approve->edit;
-
-        $allProducts    = array(0 => '') + $this->loadModel('product')->getPairs('noclosed|nocode');
-        $linkedProducts = $this->approve->getProducts($project->id);
-        $linkedBranches = array();
-        foreach($linkedProducts as $product)
-        {
-            if(!isset($allProducts[$product->id])) $allProducts[$product->id] = $product->name;
-            if($product->branch) $linkedBranches[$product->branch] = $product->branch;
-        }
-        $this->loadModel('productplan');
-        $productPlans = array(0 => '');
-        foreach($linkedProducts as $product)
-        {
-            $productPlans[$product->id] = $this->productplan->getPairs($product->id);
-        }
-
-        if(strpos($this->config->custom->productProject, '_2')) 
-        {
-            $this->view->isSprint = true;
-
-            unset($this->lang->approve->typeList['waterfall']);
-            unset($this->lang->approve->typeList['ops']);
-
-            unset($this->lang->approve->endList[62]);
-            unset($this->lang->approve->endList[93]);
-            unset($this->lang->approve->endList[186]);
-            unset($this->lang->approve->endList[365]);
-        }
 
         $this->view->title          = $title;
         $this->view->position       = $position;
-        $this->view->projects       = $projects;
         $this->view->project        = $project;
-        $this->view->poUsers        = $this->loadModel('user')->getPairs('noclosed|nodeleted|pofirst', $project->PO);
-        $this->view->pmUsers        = $this->user->getPairs('noclosed|nodeleted|pmfirst',  $project->PM);
-        $this->view->qdUsers        = $this->user->getPairs('noclosed|nodeleted|qdfirst',  $project->QD);
-        $this->view->rdUsers        = $this->user->getPairs('noclosed|nodeleted|devfirst', $project->RD);
-        $this->view->groups         = $this->loadModel('group')->getPairs();
-        $this->view->allProducts    = $allProducts;
-        $this->view->linkedProducts = $linkedProducts;
-        $this->view->productPlans   = $productPlans;
-        $this->view->branchGroups   = $this->loadModel('branch')->getByProducts(array_keys($linkedProducts), '', $linkedBranches);
+        $this->view->pmUsers        = $this->loadModel('user')->getPairs('noclosed|nodeleted|pmfirst',  $project->PM);
+        $this->view->approve        = $approve;
 
         $this->display();
     }
@@ -1203,87 +1155,30 @@ class approve extends control
      * @access public
      * @return void
      */
-    public function approve($projectID, $action = 'edit', $extra = '')
+    public function approve($approveId, $projectID)
     {
         $browseProjectLink = $this->createLink('project', 'browse', "projectID=$projectID");
         if(!empty($_POST))
         {
-            $changes = $this->approve->update($projectID);
+            $postResult = $_POST["result"];
+            $changes = $this->approve->update($approveId);
             if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
-
-            $this->approve->updateProducts($projectID);
-            if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
-            if($action == 'undelete')
+            if($this->post->comment != '' or !empty($changes))
             {
-                $this->loadModel('action');
-                $this->dao->update(TABLE_APPROVE)->set('deleted')->eq(0)->where('id')->eq($projectID)->exec();
-                $this->dao->update(TABLE_ACTION)->set('extra')->eq(ACTIONMODEL::BE_UNDELETED)->where('id')->eq($extra)->exec();
-                $this->action->create('project', $projectID, 'undeleted');
-            }
-            if($changes)
-            {
-                $actionID = $this->loadModel('action')->create('project', $projectID, 'edited');
+                $actionID = $this->loadModel('action')->create('approve', $approveId, "approve$postResult", $this->post->comment);
                 $this->action->logHistory($actionID, $changes);
             }
-            $this->executeHooks($projectID);
-            $this->send(array('result' => 'success', 'message' => $this->lang->saveSuccess, 'locate' => inlink('view', "projectID=$projectID")));
+            $this->executeHooks($approveId);
+            die(js::reload('parent.parent'));
         }
 
-        /* Set menu. */
-        $this->approve->setMenu($this->projects, $projectID);
-
-        $projects = array('' => '') + $this->projects;
         $project  = $this->approve->getById($projectID);
-        $managers = $this->approve->getDefaultManagers($projectID);
-
-        /* Remove current project from the projects. */
-        unset($projects[$projectID]);
-
+        $approve  = $this->approve->getApproveById($approveId);
         $title      = $this->lang->approve->edit . $this->lang->colon . $project->name;
-        $position[] = html::a($browseProjectLink, $project->name);
-        $position[] = $this->lang->approve->edit;
-
-        $allProducts    = array(0 => '') + $this->loadModel('product')->getPairs('noclosed|nocode');
-        $linkedProducts = $this->approve->getProducts($project->id);
-        $linkedBranches = array();
-        foreach($linkedProducts as $product)
-        {
-            if(!isset($allProducts[$product->id])) $allProducts[$product->id] = $product->name;
-            if($product->branch) $linkedBranches[$product->branch] = $product->branch;
-        }
-        $this->loadModel('productplan');
-        $productPlans = array(0 => '');
-        foreach($linkedProducts as $product)
-        {
-            $productPlans[$product->id] = $this->productplan->getPairs($product->id);
-        }
-
-        if(strpos($this->config->custom->productProject, '_2')) 
-        {
-            $this->view->isSprint = true;
-
-            unset($this->lang->approve->typeList['waterfall']);
-            unset($this->lang->approve->typeList['ops']);
-
-            unset($this->lang->approve->endList[62]);
-            unset($this->lang->approve->endList[93]);
-            unset($this->lang->approve->endList[186]);
-            unset($this->lang->approve->endList[365]);
-        }
 
         $this->view->title          = $title;
-        $this->view->position       = $position;
-        $this->view->projects       = $projects;
         $this->view->project        = $project;
-        $this->view->poUsers        = $this->loadModel('user')->getPairs('noclosed|nodeleted|pofirst', $project->PO);
-        $this->view->pmUsers        = $this->user->getPairs('noclosed|nodeleted|pmfirst',  $project->PM);
-        $this->view->qdUsers        = $this->user->getPairs('noclosed|nodeleted|qdfirst',  $project->QD);
-        $this->view->rdUsers        = $this->user->getPairs('noclosed|nodeleted|devfirst', $project->RD);
-        $this->view->groups         = $this->loadModel('group')->getPairs();
-        $this->view->allProducts    = $allProducts;
-        $this->view->linkedProducts = $linkedProducts;
-        $this->view->productPlans   = $productPlans;
-        $this->view->branchGroups   = $this->loadModel('branch')->getByProducts(array_keys($linkedProducts), '', $linkedBranches);
+        $this->view->approve        = $approve;
 
         $this->display();
     }
@@ -1428,31 +1323,32 @@ class approve extends control
      * @access public
      * @return void
      */
-    public function start($projectID)
+    public function start($approveId)
     {
+        $approve = $this->approve->getApproveById($approveId);
+        $projectId = $approve->project;
         $project   = $this->commonAction($projectID);
-        $projectID = $project->id;
 
         if(!empty($_POST))
         {
             $this->loadModel('action');
-            $changes = $this->approve->start($projectID);
+            $changes = $this->approve->start($approveId);
             if(dao::isError()) die(js::error(dao::getError()));
 
             if($this->post->comment != '' or !empty($changes))
             {
-                $actionID = $this->action->create('project', $projectID, 'Started', $this->post->comment);
+                $actionID = $this->action->create('approve', $approveId, 'startedapprove', $this->post->comment);
                 $this->action->logHistory($actionID, $changes);
             }
-            $this->executeHooks($projectID);
+            $this->executeHooks($approveId);
             die(js::reload('parent.parent'));
         }
 
+        $this->view->project    = $project;
+        $this->view->approve    = $approve;
         $this->view->title      = $this->view->project->name . $this->lang->colon .$this->lang->approve->start;
-        $this->view->position[] = html::a($this->createLink('project', 'browse', "projectID=$projectID"), $this->view->project->name);
-        $this->view->position[] = $this->lang->approve->start;
         $this->view->users      = $this->loadModel('user')->getPairs('noletter');
-        $this->view->actions    = $this->loadModel('action')->getList('project', $projectID);
+        $this->view->actions    = $this->loadModel('action')->getList('approve', $approveId);
         $this->display();
     }
 
@@ -1610,9 +1506,11 @@ class approve extends control
      * @access public
      * @return void
      */
-    public function view($projectID)
+    public function view($approveId, $projectID)
     {
         $project = $this->approve->getById($projectID, true);
+        $approve = $this->approve->getApproveById($approveId, true);
+        $approve->user = $this->app->user;
         if(!$project) die(js::error($this->lang->notFound) . js::locate('back'));
 
         $products = $this->approve->getProducts($project->id);
@@ -1640,18 +1538,19 @@ class approve extends control
         $this->view->position[] = $this->view->title;
 
         $this->view->project      = $project;
+        $this->view->approve      = $approve;
         $this->view->products     = $products;
         $this->view->branchGroups = $this->loadModel('branch')->getByProducts(array_keys($products), '', $linkedBranches);
         $this->view->planGroups   = $this->approve->getPlans($products);
         $this->view->groups       = $this->loadModel('group')->getPairs();
-        $this->view->actions      = $this->loadModel('action')->getList('project', $projectID);
+        $this->view->actions      = $this->loadModel('action')->getList('approve', $approveId);
         $this->view->dynamics     = $this->loadModel('action')->getDynamic('all', 'all', 'date_desc', $pager, 'all', $projectID);
         $this->view->users        = $this->loadModel('user')->getPairs('noletter');
         $this->view->teamMembers  = $this->approve->getTeamMembers($projectID);
-        $this->view->docLibs      = $this->loadModel('doc')->getLibsByObject('project', $projectID);
         $this->view->statData     = $this->approve->statRelatedData($projectID);
         $this->view->chartData    = $chartData;
-
+        $this->view->pmUsers      = $this->user->getPairs('noclosed|nodeleted|pmfirst',  $project->PM);
+        
         $this->display();
     }
 
@@ -2355,7 +2254,7 @@ class approve extends control
         $this->view->method    = $method;
         $this->view->extra     = $extra;
 
-        $projects = $this->dao->select('*')->from(TABLE_APPROVE)->where('id')->in(array_keys($this->projects))->orderBy('order desc')->fetchAll();
+        $projects = $this->dao->select('*')->from(TABLE_PROJECT)->where('id')->in(array_keys($this->projects))->orderBy('order desc')->fetchAll();
         $projectPairs = array();
         foreach($projects as $project) $projectPairs[$project->id] = $project->name;
         $this->view->projects = $projects;
@@ -2421,7 +2320,6 @@ class approve extends control
         if($this->projects)
         {
             $project   = $this->commonAction($projectID);
-            $projectID = $project->id;
         }
         $this->session->set('projectList', $this->app->getURI(true));
 
@@ -2432,7 +2330,7 @@ class approve extends control
         $this->app->loadLang('my');
         $this->view->title         = $this->lang->approve->allProject;
         $this->view->position[]    = $this->lang->approve->allProject;
-        $this->view->projectStats  = $this->approve->getApproveStats($status, $productID, 0, 30, $orderBy, $pager);
+        $this->view->projectStats  = $this->approve->getApproveStats($status, $projectID, $productID, 0, 30, $orderBy, $pager);
         $this->view->products      = array(0 => $this->lang->product->select) + $this->loadModel('product')->getPairs();
         $this->view->productID     = $productID;
         $this->view->projectID     = $projectID;
@@ -2452,7 +2350,7 @@ class approve extends control
      * @access public
      * @return void
      */
-    public function export($status, $productID, $orderBy, $allstatus)
+    public function export($status, $projectID = 0, $productID, $orderBy, $allstatus)
     {
         if($_POST)
         {
@@ -2468,7 +2366,7 @@ class approve extends control
                 unset($fields[$key]);
             }
 
-            $projectStats = $this->approve->getApproveStats($status == 'byproduct' ? 'all' : $status, $productID, 0, 30, $orderBy, null, $allstatus === 'allsprint');
+            $projectStats = $this->approve->getApproveStats($status == 'byproduct' ? 'all' : $status, $projectID, $productID, 0, 30, $orderBy, null, $allstatus === 'allsprint');
             $users        = $this->loadModel('user')->getPairs('noletter');
             foreach($projectStats as $i => $project)
             {

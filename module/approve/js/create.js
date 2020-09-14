@@ -32,9 +32,9 @@ $(function()
 
     var adjustMainCol = function()
     {
-        $('.main-form .col-main').css('width', Math.max(250, Math.floor(($('#productsBox').outerWidth() - 50)/3) + 10));
+        $('.main-form .col-main').css('width', Math.max(300, Math.floor(($('#productsBox').outerWidth() - 50)/3) + 10));
     };
-    adjustMainCol();
+    // adjustMainCol();
     $(window).on('resize', adjustMainCol);
 });
 
