@@ -123,7 +123,7 @@ $lang->block->default['approve']['1']['grid']  = 8;
 
 $lang->block->default['approve']['1']['params']['num']     = 15;
 $lang->block->default['approve']['1']['params']['orderBy'] = 'id_desc';
-$lang->block->default['approve']['1']['params']['type']    = 'all';
+$lang->block->default['approve']['1']['params']['type']    = 'doing';
 
 $lang->block->default['approve']['2']['title'] = $lang->approveCommon . '总览';
 $lang->block->default['approve']['2']['block'] = 'overview';
