@@ -35,7 +35,7 @@
           <td colspan='1'><?php echo html::select('result', $lang->approve->resultTypes, 'pass', "class='form-control chosen'");?></td>
         </tr>
         <tr>
-          <th><?php echo $lang->approve->commnet;?></th>
+          <th><?php echo $lang->approve->comment;?></th>
           <td colspan='2'><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?></td>
         </tr>
         <tr>

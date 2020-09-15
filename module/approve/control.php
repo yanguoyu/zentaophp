@@ -2338,9 +2338,21 @@ class approve extends control
         $this->view->orderBy       = $orderBy;
         $this->view->users         = $this->loadModel('user')->getPairs('noletter');
         $this->view->status        = $status;
+        foreach($this->view->projectStats as $id => $approve) {
+            if ($approve->status != 'finish') {
+                $this->view->disabledCreate = "disabled";
+                break;
+            }
+        }
 
         $this->display();
     }
+
+    public function list($status = 'all', $projectID = 0, $orderBy = 'order_desc', $productID = 0, $recTotal = 0, $recPerPage = 10, $pageID = 1) {
+        self::all($status, $projectID, $orderBy, $productID, $recTotal, $recPerPage, $pageID);
+    }
+
+
     /**
      * Export project.
      *

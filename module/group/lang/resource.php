@@ -448,6 +448,7 @@ $lang->resource->approve->export            = 'exportAction';
 $lang->resource->approve->storyKanban       = 'storyKanban';
 $lang->resource->approve->storySort         = 'storySort';
 $lang->resource->approve->approve           = 'approve';
+$lang->resource->approve->list              = 'list';
 
 $lang->approve->methodOrder[0]   = 'index';
 $lang->approve->methodOrder[5]   = 'view';

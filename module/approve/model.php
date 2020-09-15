@@ -2080,6 +2080,8 @@ class approveModel extends model
             $link = helper::createLink($module, $method, "projectID=%s");
         } elseif ($method == 'index') {
             $link = helper::createLink($module, 'all', "status=all&projectID=%s");
+        } elseif ($method == 'all') {
+            $link = helper::createLink($module, 'list', "status=all&projectID=%s");
         }
         if($extra != '')
         {

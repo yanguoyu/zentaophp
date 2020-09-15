@@ -377,5 +377,6 @@ $lang->approve->approve = $lang->approveCommon;
 $lang->approve->result = $lang->approveCommon . '结果   ';
 $lang->approve->resultTypes['pass']    = $lang->approveCommon . "通过";
 $lang->approve->resultTypes['back']  = $lang->approveCommon . "驳回";
-$lang->approve->commnet       = $lang->approveCommon . "意见";
+$lang->approve->comment       = $lang->approveCommon . "意见";
 $lang->approve->startApprove = '自动发起审批';
+$lang->approve->list         = '概况';

@@ -14,7 +14,7 @@
 <div id='mainMenu' class='clearfix'>
   <div class='btn-toolbar pull-left'>
     <?php foreach($lang->approve->featureBar['all'] as $key => $label):?>
-    <?php echo html::a(inlink('all', "status=$key&projectID=$projectID&orderBy=$orderBy&productID=$productID"), "<span class='text'>{$label}</span>", '', "class='btn btn-link' id='{$key}Tab'");?>
+    <?php echo html::a(inlink($curModule ?: "all", "status=$key&projectID=$projectID&orderBy=$orderBy&productID=$productID"), "<span class='text'>{$label}</span>", '', "class='btn btn-link' id='{$key}Tab'");?>
     <?php endforeach;?>
     <?php if($projectID == 0):?>
       <div class='input-control space w-180px'>
@@ -25,7 +25,7 @@
   <div class='btn-toolbar pull-right'>
     <?php common::printLink('approve', 'export', "status=$status&productID=$productID&orderBy=$orderBy", "<i class='icon-export muted'> </i>" . $lang->export, '', "class='btn btn-link export'")?>
     <?php if($projectID != 0):?>
-      <?php common::printLink('approve', 'create', "projectId=$projectID", "<i class='icon-plus'></i> " . $lang->approve->create, '', "class='btn btn-primary'")?>
+      <?php common::printLink('approve', 'create', "projectId=$projectID", "<i class='icon-plus'></i> " . $lang->approve->create, '', "class='btn btn-primary' $disabledCreate")?>
     <?php endif;?>
   </div>
 </div>

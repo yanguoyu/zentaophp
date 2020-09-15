@@ -264,7 +264,7 @@ $lang->project->dividerMenu = ',story,team,product,';
 $lang->approve = new stdclass();
 $lang->approve->menu = new stdclass();
 
-$lang->approve->menu->view    = array('link' => '概况|approve|all|all=all&projectID=%s');
+$lang->approve->menu->view    = array('link' => '概况|approve|list|all=all&projectID=%s');
 
 
 $lang->task  = new stdclass();
