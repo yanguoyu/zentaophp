@@ -10,9 +10,6 @@
  * @link        http://www.zentao.net
  */
 ?>
-<!-- <div>
-  <?php echo json_encode($approveStats) ?>
-</div> -->
 <?php if(empty($approveStats)): ?>
 <div class='empty-tip'><?php common::printLink('project', 'index', '', "<i class='icon-plus'></i> " . $lang->approve->create, '', "class='btn btn-primary'")?></div>
 <?php else:?>

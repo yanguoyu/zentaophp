@@ -565,8 +565,9 @@ class block extends control
         $num   = isset($this->params->num) ? (int)$this->params->num : 0;
         $type  = isset($this->params->type) ? $this->params->type : 'all';
         $pager = pager::init(0, $num, 1);
+        $this->view->code = 'approveassign';
         $this->view->users        = $this->loadModel('user')->getPairs('noletter');
-        $this->view->approveStats = $this->loadModel('approve')->getApproveStats($type, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $this->viewType != 'json' ? $pager : '');
+        $this->view->approveStats = $this->loadModel('approve')->getApproveStats($type, 0, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $this->viewType != 'json' ? $pager : '');
     }
 
     /**
@@ -1239,7 +1240,8 @@ class block extends control
         $type  = isset($this->params->type) ? $this->params->type : 'all';
         $pager = pager::init(0, $num, 1);
         $this->view->users        = $this->loadModel('user')->getPairs('noletter');
-        $this->view->approveStats = $this->loadModel('approve')->getApproveStats($type, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $this->viewType != 'json' ? $pager : '');
+        $this->view->params = $this->params;
+        $this->view->approveStats = $this->loadModel('approve')->getApproveStats($type, 0, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $this->viewType != 'json' ? $pager : '');
     }
 
     /**

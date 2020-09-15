@@ -123,13 +123,13 @@ $lang->block->default['approve']['1']['grid']  = 8;
 
 $lang->block->default['approve']['1']['params']['num']     = 15;
 $lang->block->default['approve']['1']['params']['orderBy'] = 'id_desc';
-$lang->block->default['approve']['1']['params']['type']    = 'wait';
+$lang->block->default['approve']['1']['params']['type']    = 'all';
 
 $lang->block->default['approve']['2']['title'] = $lang->approveCommon . '总览';
 $lang->block->default['approve']['2']['block'] = 'overview';
 $lang->block->default['approve']['2']['grid']  = 4;
 
-$lang->block->default['approve']['3']['title'] = '指派给我的' . $lang->approveCommon ;
+$lang->block->default['approve']['3']['title'] = '我的' . $lang->approveCommon ;
 $lang->block->default['approve']['3']['block'] = 'task';
 $lang->block->default['approve']['3']['grid']  = 4;
 
