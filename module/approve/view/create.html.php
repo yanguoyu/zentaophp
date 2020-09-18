@@ -77,17 +77,9 @@
           </td>
         </tr>
         <tr>
-          <th><?php echo $lang->approve->startApprove;?></th>
-          <td>
-            <div class="checkbox-primary">
-              <input type='checkbox' id='startApprove' name='startApprove' value='1' checked />
-              <label for='startApprove'><?php echo $lang->approve->startApprove;?></label>
-            </div>
-          </td>
-        </tr>
-        <tr>
           <td colspan='4' class='text-center form-actions'>
-            <?php echo html::submitButton();?>
+            <?php echo html::submitButton($lang->approve->save, "name='save'");?>
+            <?php echo html::submitButton($lang->approve->startAction, "name='startAction'");?>
             <?php echo html::backButton();?>
             <?php if($isSprint) echo html::hidden('type', 'sprint');?>
           </td>

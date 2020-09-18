@@ -1054,7 +1054,11 @@ class approve extends control
 
         if(!empty($_POST))
         {
-            $approveId = $this->approve->create($projectID, $type);
+            if (isset($_POST['save'])) {
+                $approveId = $this->approve->create($projectID, $type, FALSE);
+            }else if (isset($_POST['startAction'])) {
+                $approveId = $this->approve->create($projectID, $type, TRUE);
+            }
             if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
 
             $this->loadModel('action')->create('approve', $approveId, 'opened', '', join(',', $_POST['products']));

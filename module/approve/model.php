@@ -260,27 +260,28 @@ class approveModel extends model
 
     /**
      * Create a approve.
-     *
-     *
+     * @param  string $projectID 审批关联的 projectId
+     * @param  string $type
+     * @param  bool   $startApprove True 为发起审批 False 为保存
      * @access public
      * @return void
      */
-    public function create($projectID, $type)
+    public function create($projectID, $type, $startApprove)
     {
         $this->lang->approve->team = $this->lang->approve->teamname;
         $approve = fixer::input('post')
-            ->setDefault('status', $this->post->startApprove == '1' ? 'doing' : 'wait')
+            ->setDefault('status', $startApprove ? 'doing' : 'wait')
             ->setIF($this->post->acl != 'custom', 'whitelist', '')
             ->setDefault('openedBy', $this->app->user->account)
             ->setDefault('openedDate', helper::now())
-            ->setDefault('assignedTo', $this->post->startApprove == '1' ? $this->post->PM : $this->app->user->account)
+            ->setDefault('assignedTo', $startApprove ? $this->post->PM : $this->app->user->account)
             ->setDefault('approveStep', 'PM')
             ->setDefault('assignedDate', helper::now())
             ->setDefault('openedVersion', $this->config->version)
             ->setDefault('team', substr($this->post->name,0, 30))
             ->join('whitelist', ',')
             ->stripTags($this->config->approve->editor->create['id'], $this->config->allowedTags)
-            ->remove('products, workDays, delta, branch, uid, plans, startApprove')
+            ->remove('save,delta,startAction')
             ->get();
         $approve->project = $projectID;
         $approve->type = $type;
@@ -308,22 +309,23 @@ class approveModel extends model
     }
 
     /**
-     * Edit a project.
+     * Edit a approve.
      *
-     * @param  int    $projectID
+     * @param  int    $approveId
+     * @param  bool   $startApprove True 为发起审批 False 为保存
      * @access public
      * @return array
      */
-    public function edit($approveId)
+    public function edit($approveId, $startApprove)
     {
         $approveId  = (int)$approveId;
         $oldApprove = $this->dao->findById($approveId)->from(TABLE_APPROVE)->fetch();
         $approve = fixer::input('post')
-            ->setDefault('status', $this->post->startApprove == '1' ? 'doing' : 'wait')
-            ->setDefault('assignedTo', $this->post->startApprove == '1' ? $this->post->PM : $this->app->user->account)
+            ->setDefault('status', $startApprove ? 'doing' : 'wait')
+            ->setDefault('assignedTo', $startApprove ? $this->post->PM : $this->app->user->account)
             ->setDefault('assignedDate', helper::now())
             ->stripTags($this->config->approve->editor->edit['id'], $this->config->allowedTags)
-            ->remove('startApprove')
+            ->remove('save,delta,startAction')
             ->get();
         $approve = $this->loadModel('file')->processImgURL($approve, $this->config->approve->editor->edit['id'], $this->post->uid);
         $this->dao->update(TABLE_APPROVE)->data($approve)
