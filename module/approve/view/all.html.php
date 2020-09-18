@@ -1,11 +1,11 @@
 <?php
 /**
- * The html template file of all method of project module of ZenTaoPMS.
+ * The html template file of all method of approve module of ZenTaoPMS.
  *
  * @copyright   Copyright 2009-2015 青岛易软天创网络科技有限公司(QingDao Nature Easy Soft Network Technology Co,LTD, www.cnezsoft.com)
  * @license     ZPL (http://zpl.pub/page/zplv12.html)
  * @author      Yidong Wang <yidong@cnezsoft.com>
- * @package     project
+ * @package     approve
  * @version     $Id: index.html.php 5094 2013-07-10 08:46:15Z chencongzhi520@gmail.com $
  */
 ?>
@@ -30,8 +30,8 @@
   </div>
 </div>
 <div id='mainContent'>
-  <?php $canOrder = (common::hasPriv('project', 'updateOrder') and strpos($orderBy, 'order') !== false)?>
-  <form class='main-table' id='projectsForm' method='post' action='<?php echo inLink('batchEdit', "projectID=$projectID");?>' data-ride='table'>
+  <?php $canOrder = (common::hasPriv('approve', 'updateOrder') and strpos($orderBy, 'order') !== false)?>
+  <form class='main-table' id='projectsForm' method='post' data-ride='table'>
     <table class='table has-sort-head table-fixed' id='projectList'>
       <?php $vars = "status=$status&projectID=$projectID&orderBy=%s&productID=$productID&recTotal={$pager->recTotal}&recPerPage={$pager->recPerPage}&pageID={$pager->pageID}";?>
       <thead>
@@ -46,58 +46,60 @@
           <th class='w-420px text-center'><?php common::printOrderLink('productName', $orderBy, $vars, $lang->approve->productName);?></th>
           <th><?php common::printOrderLink('type', $orderBy, $vars, $lang->approve->type);?></th>
           <th><?php common::printOrderLink('openedDate', $orderBy, $vars, $lang->approve->openedDate);?></th>
+          <th><?php common::printOrderLink('startDate', $orderBy, $vars, $lang->approve->startDate);?></th>
           <th><?php common::printOrderLink('closedDate', $orderBy, $vars, $lang->approve->closedDate);?></th>
           <th><?php common::printOrderLink('openedBy', $orderBy, $vars, $lang->approve->openedBy);?></th>
           <th><?php common::printOrderLink('PO', $orderBy, $vars, $lang->approve->productManager);?></th>
           <th><?php common::printOrderLink('LD', $orderBy, $vars, $lang->approve->LD);?></th>
-          <th><?php common::printOrderLink('status', $orderBy, $vars, $lang->approve->status);?></th>
+          <th class='w-60px'><?php common::printOrderLink('status', $orderBy, $vars, $lang->approve->status);?></th>
           <th><?php common::printOrderLink('assignedTo', $orderBy, $vars, $lang->approve->assignedTo);?></th>
-          <th><?php echo $lang->approve->operator?></th>
+          <th class='w-130px'><?php echo $lang->approve->operator?></th>
         </tr>
       </thead>
       <?php $canBatchEdit = common::hasPriv('project', 'batchEdit'); ?>
       <tbody class='sortable' id='projectTableList'>
-        <?php foreach($projectStats as $project):?>
-        <tr data-id='<?php echo $project->id ?>' data-order='<?php echo $project->order ?>'>
+        <?php foreach($approveStats as $approve):?>
+        <tr data-id='<?php echo $approve->id ?>' data-order='<?php echo $approve->order ?>'>
           <td class='c-id'>
             <?php if($canBatchEdit):?>
             <div class="checkbox-primary">
-              <input type='checkbox' name='projectIDList[<?php echo $project->id;?>]' value='<?php echo $project->id;?>' />
+              <input type='checkbox' name='projectIDList[<?php echo $approve->id;?>]' value='<?php echo $approve->id;?>' />
               <label></label>
             </div>
             <?php endif;?>
-            <?php printf('%03d', $project->id);?>
+            <?php printf('%03d', $approve->id);?>
           </td>
-          <td class='text-left' title='<?php echo $project->name?>'>
+          <td class='text-left' title='<?php echo $approve->name?>'>
             <?php
-            echo html::a($this->createLink('project', 'view', 'project=' . $project->project), $project->projectName);
+            echo html::a($this->createLink('project', 'view', 'project=' . $approve->project), $approve->projectName);
             ?>
           </td>
-          <td class='text-center'><?php echo $project->productName;?></td>
-          <td class='w-110px'><?php echo $lang->approve->typeList[$project->type];?></td>
-          <td><?php echo $project->openedDate;?></td>
-          <td><?php echo $project->closedDate;?></td>
-          <td><?php echo zget($users, $project->openedBy);?></td>
-          <td><?php echo zget($users, $project->PO);?></td>
-          <td><?php echo zget($users, $project->LD);?></td>
-          <?php $projectStatus = $this->processStatus('approve', $project);?>
+          <td class='text-center'><?php echo $approve->productName;?></td>
+          <td class='w-110px'><?php echo $lang->approve->typeList[$approve->type];?></td>
+          <td><?php echo formatTime($approve->openedDate, 'Y-m-d');?></td>
+          <td><?php echo formatTime($approve->startDate, 'Y-m-d');?></td>
+          <td><?php echo formatTime($approve->closedDate, 'Y-m-d');?></td>
+          <td><?php echo zget($users, $approve->openedBy);?></td>
+          <td><?php echo zget($users, $approve->PO);?></td>
+          <td><?php echo zget($users, $approve->LD);?></td>
+          <?php $projectStatus = $this->processStatus('approve', $approve);?>
           <td class='c-status' title='<?php echo $projectStatus;?>'>
-            <span class="status-project status-<?php echo $project->status?>"><?php echo $projectStatus;?></span>
+            <span class="status-project status-<?php echo $approve->status?>"><?php echo $projectStatus;?></span>
           </td>
-          <td><?php echo zget($users, $project->assignedTo);?></td>
+          <td><?php echo zget($users, $approve->assignedTo);?></td>
           <?php if($canOrder):?>
           <td class='datatable-cell c-actions'>
-            <?php common::printIcon('approve', 'view',  "id=$project->id&projectId=$project->project", $project, 'list', 'eye', '', ''); ?>
-            <?php common::printIcon('approve', 'start',  "id=$project->id&projectId=$project->project", $project, 'list', 'play', '', 'iframe', true, '', $lang->startAction); ?>
-            <?php common::printIcon('approve', 'edit',  "id=$project->id&projectId=$project->project", $project, 'list', '', '', ''); ?>
-            <?php common::printIcon('approve', 'approve',  "id=$project->id&projectId=$project->project", $project, 'list', 'checked', '', 'iframe', true, '', $lang->approveCommon); ?>
+            <?php common::printIcon('approve', 'view',  "id=$approve->id", $approve, 'list', 'eye', '', ''); ?>
+            <?php common::printIcon('approve', 'start',  "id=$approve->id", $approve, 'list', 'play', '', 'iframe', true, '', $lang->startAction); ?>
+            <?php common::printIcon('approve', 'edit',  "id=$approve->id", $approve, 'list', '', '', ''); ?>
+            <?php common::printIcon('approve', 'approve',  "id=$approve->id", $approve, 'list', 'checked', '', 'iframe', true, '', $lang->approveCommon); ?>
           </td>
           <?php endif;?>
         </tr>
         <?php endforeach;?>
       </tbody>
     </table>
-    <?php if($projectStats):?>
+    <?php if($approveStats):?>
     <div class='table-footer'>
       <?php if($canBatchEdit):?>
       <div class="checkbox-primary check-all"><label><?php echo $lang->selectAll?></label></div>

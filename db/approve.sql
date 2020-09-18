@@ -17,6 +17,7 @@ CREATE TABLE `zt_approve` (
   `desc` text NOT NULL,
   `openedBy` varchar(30) NOT NULL DEFAULT '',
   `openedDate` datetime NOT NULL,
+  `startDate` datetime,
   `approveStep` varchar(30) NOT NULL DEFAULT 'PM',
   `assignedTo` varchar(30) NOT NULL,
   `assignedDate` datetime NOT NULL,

@@ -77,10 +77,10 @@
           if(!$approve->deleted)
           {
               echo "<div class='divider'></div>";
-              common::printIcon('approve', 'start', "id=$approve->id&projectId=$project->id", $approve, 'button', 'play', '', 'iframe', true, '', $lang->approve->startAction);
-              common::printIcon('approve', 'approve', "id=$approve->id&projectId=$project->id", $approve, 'button', 'checked', '', 'iframe', true, '', $lang->approve->approve);
+              common::printIcon('approve', 'start', "id=$approve->id", $approve, 'button', 'play', '', 'iframe', true, '', $lang->approve->startAction);
+              common::printIcon('approve', 'approve', "id=$approve->id", $approve, 'button', 'checked', '', 'iframe', true, '', $lang->approve->approve);
               echo "<div class='divider'></div>";
-              common::printIcon('approve', 'edit',  "id=$approve->id&projectId=$project->id", $approve, 'list', '', '', '');
+              common::printIcon('approve', 'edit',  "id=$approve->id", $approve, 'list', '', '', '');
           }
           ?>
         </div>
