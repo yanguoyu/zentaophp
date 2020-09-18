@@ -14,13 +14,14 @@ $lang->approve->common        = $lang->approveCommon . '视图';
 $lang->approve->allProjects   = '所有' . $lang->approveCommon;
 $lang->approve->id            = $lang->approveCommon . '编号';
 $lang->approve->type          = $lang->approveCommon . '类型';
-$lang->approve->name          = '关联项目';
+$lang->approve->name          = '任务名称';
 $lang->approve->relatedName   = '关联项目名称';
+$lang->approve->productName   = '业务方向';
 $lang->approve->code          = $lang->approveCommon . '代号';
 $lang->approve->statge        = '阶段';
 $lang->approve->pri           = '优先级';
 $lang->approve->openedBy      = '由谁创建';
-$lang->approve->openedDate    = '创建日期';
+$lang->approve->openedDate    = '发起日期';
 $lang->approve->closedBy      = '由谁关闭';
 $lang->approve->closedDate    = '关闭日期';
 $lang->approve->canceledBy    = '由谁取消';
@@ -38,7 +39,7 @@ $lang->approve->status        = $lang->approveCommon . '状态';
 $lang->approve->subStatus     = '子状态';
 $lang->approve->desc          = $lang->approveCommon . '描述';
 $lang->approve->owner         = '负责人';
-$lang->approve->PO            = $lang->productCommon . '负责人';
+$lang->approve->PO            = '业务负责人';
 $lang->approve->PM            = $lang->projectCommon . '负责人';
 $lang->approve->LD            = '业务分管领导';
 $lang->approve->QD            = '测试负责人';
@@ -77,7 +78,7 @@ $lang->approve->relatedMember = '相关成员';
 $lang->approve->watermark     = '由禅道导出';
 $lang->approve->viewByUser    = '按用户查看';
 
-$lang->approve->start    = "开始";
+$lang->approve->start    = "发起{$lang->approveCommon}";
 $lang->approve->confirm  = "确认沟通";
 $lang->approve->changewillend  = "预计完成";
 $lang->approve->activate = "激活";
@@ -86,9 +87,9 @@ $lang->approve->suspend  = "挂起";
 $lang->approve->close    = "关闭";
 $lang->approve->export   = "导出";
 
-$lang->approve->typeList['start']    = "立项$lang->approveCommon";
-$lang->approve->typeList['suspend']  = "任务调整$lang->approveCommon";
-$lang->approve->typeList['close']    = "验收$lang->approveCommon";
+$lang->approve->typeList['start']    = "任务立项";
+$lang->approve->typeList['suspend']  = "任务调整";
+$lang->approve->typeList['close']    = "内部验收";
 
 $lang->approve->endList[7]   = '一星期';
 $lang->approve->endList[14]  = '两星期';
@@ -147,7 +148,7 @@ $lang->approve->linkPlan          = '关联计划';
 $lang->approve->unlinkStoryTasks  = "未关联{$lang->storyCommon}任务";
 $lang->approve->linkedProducts    = '已关联';
 $lang->approve->unlinkedProducts  = '未关联';
-$lang->approve->view              = "{$lang->approveCommon}概况";
+$lang->approve->view              = "{$lang->approveCommon}详情";
 $lang->approve->confirmAction     = "确认{$lang->approveCommon}";
 $lang->approve->changewillendAction     = "预计完成{$lang->approveCommon}";
 $lang->approve->startAction       = "发起{$lang->approveCommon}";
@@ -368,7 +369,8 @@ if($config->global->flow == 'onlyTask')
 }
 
 
-$lang->approve->projectManager = '项目负责人';
+$lang->approve->projectManager = '任务承接人';
+$lang->approve->productManager = '业务负责人';
 $lang->approve->leader = '业务分管领导';
 $lang->approve->operator = '操作';
 $lang->approve->openedBy       = '审批发起人';
@@ -379,5 +381,5 @@ $lang->approve->resultTypes['pass']    = $lang->approveCommon . "通过";
 $lang->approve->resultTypes['back']  = $lang->approveCommon . "驳回";
 $lang->approve->comment       = $lang->approveCommon . "意见";
 $lang->approve->startApprove = '自动发起审批';
-$lang->approve->list         = '概况';
+$lang->approve->list         = '任务审批列表';
 $lang->approve->save         = '保存';

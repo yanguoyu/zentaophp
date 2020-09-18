@@ -53,7 +53,11 @@
         </tr>
         <tr>
           <th><?php echo $lang->approve->projectManager;?></th>
-          <td colspan='1'><?php echo html::select('PM', $pmUsers, $approve->PM, "class='form-control chosen'");?></td>
+          <td colspan='1'><?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen' required");?></td>
+        </tr>
+        <tr>
+          <th><?php echo $lang->approve->productManager;?></th>
+          <td colspan='1'><?php echo html::select('PO', $pmUsers, $approve->PO, "class='form-control chosen'");?></td>
         </tr>
         <tr>
           <th><?php echo $lang->approve->leader;?></th>

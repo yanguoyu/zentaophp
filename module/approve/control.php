@@ -1034,7 +1034,7 @@ class approve extends control
     public function create($projectID = '', $type = 'start')
     {
         $project = $this->approve->getById($projectID, true);
-        if ($project->status == 'noconfirm') {
+        if ($project->status == 'noconfirm' or $project->status == 'wait' ) {
             $type = 'start';
         } else if ($project->noLeftHour) {
             $type = 'close';
@@ -1143,7 +1143,7 @@ class approve extends control
         $this->view->title          = $title;
         $this->view->position       = $position;
         $this->view->project        = $project;
-        $this->view->pmUsers        = $this->loadModel('user')->getPairs('noclosed|nodeleted|pmfirst',  $project->PM);
+        $this->view->pmUsers        = $this->loadModel('user')->getPairs('noclosed|nodeleted|pmfirst',  $project->PO);
         $this->view->approve        = $approve;
 
         $this->display();
@@ -2348,7 +2348,10 @@ class approve extends control
                 break;
             }
         }
-
+        if($project->status=='noconfirm'  )
+        {
+         $this->view->disabledCreate = "disabled";
+        }
         $this->display();
     }
 

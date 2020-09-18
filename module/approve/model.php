@@ -274,8 +274,8 @@ class approveModel extends model
             ->setIF($this->post->acl != 'custom', 'whitelist', '')
             ->setDefault('openedBy', $this->app->user->account)
             ->setDefault('openedDate', helper::now())
-            ->setDefault('assignedTo', $startApprove ? $this->post->PM : $this->app->user->account)
-            ->setDefault('approveStep', 'PM')
+            ->setDefault('assignedTo', $startApprove ? $this->post->PO : $this->app->user->account)
+            ->setDefault('approveStep', 'PO')
             ->setDefault('assignedDate', helper::now())
             ->setDefault('openedVersion', $this->config->version)
             ->setDefault('team', substr($this->post->name,0, 30))
@@ -322,7 +322,7 @@ class approveModel extends model
         $oldApprove = $this->dao->findById($approveId)->from(TABLE_APPROVE)->fetch();
         $approve = fixer::input('post')
             ->setDefault('status', $startApprove ? 'doing' : 'wait')
-            ->setDefault('assignedTo', $startApprove ? $this->post->PM : $this->app->user->account)
+            ->setDefault('assignedTo', $startApprove ? $this->post->PO : $this->app->user->account)
             ->setDefault('assignedDate', helper::now())
             ->stripTags($this->config->approve->editor->edit['id'], $this->config->allowedTags)
             ->remove('save,delta,startAction')
@@ -361,6 +361,9 @@ class approveModel extends model
         // 分管领导审批
         } else if ('LD' == $oldApprove->approveStep) {
             $status = 'finish';
+            $assignedTo = null;
+            $closedDate = $oldApprove->closedDate;
+
         } else {
             $status = 'doing';
             $approveStep = 'LD';
@@ -532,7 +535,7 @@ class approveModel extends model
     {
         $oldApprove = $this->getApproveById($approveId);
         $approve = fixer::input('post')
-            ->setDefault('assignedTo', $oldApprove->PM)
+            ->setDefault('assignedTo', $oldApprove->PO)
             ->setDefault('assignedDate', helper::now())
             ->setDefault('status', 'doing')
             ->remove('comment')->get();
@@ -746,8 +749,9 @@ class approveModel extends model
     {
         if($productID != 0)
         {
-            return $this->dao->select('t2.*')->from(TABLE_PROJECTPRODUCT)->alias('t1')
+           return $this->dao->select('t2.*,t3.name AS productName')->from(TABLE_PROJECTPRODUCT)->alias('t1')
                 ->leftJoin(TABLE_APPROVE)->alias('t2')->on('t2.project = t1.project')
+                ->leftjoin(TABLE_PRODUCT)->alias('t3')->on('t1.product = t3.id')
                 ->where('t1.product')->eq($productID)
                 ->beginIf($projectID != 0)->andWhere('t1.project')->eq($projectID)->fi()
                 ->andWhere('t2.deleted')->eq(0)
@@ -869,12 +873,15 @@ class approveModel extends model
     {
         /* Init vars. */
         $approves = $this->getList($status, 0, $projectID, $productID, $branch);
-        $approves = $this->dao->select('t1.*, t2.name as projectName')->from(TABLE_APPROVE)->alias('t1')
+        $approves = $this->dao->select('t1.*, t2.name as projectName,t4.name as productName')->from(TABLE_APPROVE)->alias('t1')
             ->leftJoin(TABLE_PROJECT)->alias('t2')->on('t1.project = t2.id')
+            ->leftjoin(TABLE_PROJECTPRODUCT)->alias('t3')->on('t2.id = t3.project')
+            ->leftjoin(TABLE_PRODUCT)->alias('t4')->on('t4.id = t3.product')
             ->where('t1.id')->in(array_keys($approves))
             ->orderBy($orderBy)
             ->page($pager)
             ->fetchAll('id');
+
         foreach($approves as $id => $approve) {
             $approve->user = $this->app->user;
         }

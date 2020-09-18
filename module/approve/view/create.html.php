@@ -63,7 +63,11 @@
         <?php $this->printExtendFields('', 'table');?>
         <tr>
           <th><?php echo $lang->approve->projectManager;?></th>
-          <td colspan='1'><?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen'");?></td>
+          <td colspan='1'><?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen' disabled");?></td>
+        </tr>
+        <tr>
+          <th><?php echo $lang->approve->productManager;?></th>
+          <td colspan='1'><?php echo html::select('PO', $pmUsers, $project->PO, "class='form-control chosen' required");?></td>
         </tr>
         <tr>
           <th><?php echo $lang->approve->leader;?></th>
@@ -73,7 +77,7 @@
           <th><?php echo $lang->approve->desc;?></th>
           <td colspan='3'>
             <?php echo $this->fetch('user', 'ajaxPrintTemplates', 'type=approve&link=desc');?>
-            <?php echo html::textarea('desc', '', "rows='6' class='form-control kindeditor' hidefocus='true'");?>
+            <?php echo html::textarea('desc', '', "rows='6' class='form-control kindeditor' hidefocus='true' required");?>
           </td>
         </tr>
         <tr>
