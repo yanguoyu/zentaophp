@@ -27,7 +27,7 @@ $config->duplicateTime = 60;
 
 /* Product common list. */
 $config->productCommonList['zh-cn'][0] = '产品';
-$config->productCommonList['zh-cn'][1] = '项目';
+$config->productCommonList['zh-cn'][1] = '任务';
 
 $config->productCommonList['zh-tw'][0] = '產品';
 $config->productCommonList['zh-tw'][1] = '項目';
@@ -42,7 +42,7 @@ $config->productCommonList['fr'][0] = 'Product';
 $config->productCommonList['fr'][1] = 'Projet';
 
 /* Project common list. */
-$config->projectCommonList['zh-cn'][0] = '项目';
+$config->projectCommonList['zh-cn'][0] = '任务';
 $config->projectCommonList['zh-cn'][1] = '迭代';
 $config->projectCommonList['zh-cn'][2] = '冲刺';
 

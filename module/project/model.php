@@ -92,8 +92,9 @@ class projectModel extends model
             $projectIndex  = '<div class="btn-group angle-btn' . ($methodName == 'index' ? ' active' : '') . '"><div class="btn-group"><button data-toggle="dropdown" type="button" class="btn">' . $label . ' <span class="caret"></span></button>';
             $projectIndex .= '<ul class="dropdown-menu">';
             if(common::hasPriv('project', 'index'))  $projectIndex .= '<li>' . html::a(helper::createLink('project', 'index', 'locate=no'), '<i class="icon icon-home"></i> ' . $this->lang->project->index) . '</li>';
-            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'allnotsprint', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allNotSprintProjects) . '</li>';
             if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'allsprint', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allSprintProjects) . '</li>';
+            if(common::hasPriv('project', 'all'))    $projectIndex .= '<li>' . html::a(helper::createLink('project', 'allnotsprint', 'status=all'), '<i class="icon icon-cards-view"></i> ' . $this->lang->project->allNotSprintProjects) . '</li>';
+
             if(common::isTutorialMode())
             {
                 $wizardParams = helper::safe64Encode('');
@@ -871,8 +872,8 @@ class projectModel extends model
                 ->where('t1.product')->eq($productID)
                 ->andWhere('t2.deleted')->eq(0)
                 ->andWhere('t2.iscat')->eq(0)
-                ->beginIF($isSprint == true)->andWhere('t2.type')->eq('sprint')->fi()	
-                ->beginIF($isSprint == false)->andWhere('t2.type')->ne('sprint')->fi()
+                ->beginIF($isSprint == true)->andWhere('t2.type')->IN('sprint,waterfall')->fi()	
+                ->beginIF($isSprint == false)->andWhere('t2.type')->notIN('sprint,waterfall')->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.status')->notIN('done,closed,suspended')->fi()
                 ->beginIF($status == 'undone')->andWhere('t2.status')->notIN('done,closed')->fi()
@@ -887,8 +888,8 @@ class projectModel extends model
         {
             return $this->dao->select('*, IF(INSTR(" done,closed", status) < 2, 0, 1) AS isDone')->from(TABLE_PROJECT)->where('iscat')->eq(0)
                 ->beginIF($status == 'undone')->andWhere('status')->notIN('done,closed')->fi()
-                ->beginIF($isSprint == true)->andWhere('type')->eq('sprint')->fi()	
-                ->beginIF($isSprint == false)->andWhere('type')->ne('sprint')->fi()
+                ->beginIF($isSprint == true)->andWhere('type')->IN('sprint,waterfall')->fi()	
+                ->beginIF($isSprint == false)->andWhere('type')->notIN('sprint,waterfall')->fi()
                 ->beginIF($status == 'delayed')->andWhere('end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('status')->notIN('done,closed,suspended')->fi()
                 ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed')->andWhere('status')->in($status)->fi()

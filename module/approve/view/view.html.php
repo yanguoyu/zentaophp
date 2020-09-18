@@ -42,7 +42,11 @@
               </tr>
               <tr>
                 <th><?php echo $lang->approve->projectManager;?></th>
-                <td colspan='1'><?php echo html::select('PM', $pmUsers, $approve->PM, "class='form-control chosen' disabled");?></td>
+                <td colspan='1'><?php echo html::select('PM', $pmUsers, $project->PM, "class='form-control chosen' disabled");?></td>
+              </tr>
+              <tr>
+                <th><?php echo $lang->approve->productManager;?></th>
+                <td colspan='1'><?php echo html::select('PO', $pmUsers, $approve->PO, "class='form-control chosen' disabled");?></td>
               </tr>
               <tr>
                 <th><?php echo $lang->approve->leader;?></th>
@@ -51,7 +55,7 @@
               <tr>
                 <th><?php echo $lang->approve->desc;?></th>
                 <td colspan='3'>
-                  <?php echo html::textarea('desc', $approve->desc, "rows='6' class='form-control kindeditor' disabled hidefocus='true'");?>
+                  <?php echo html::textarea('desc', $approve->desc, "rows='6' class='form-control kindeditor' hidefocus='true' disabled");?>
                 </td>
               </tr>
             </table>

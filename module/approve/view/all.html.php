@@ -42,15 +42,16 @@
             </div>
             <?php common::printOrderLink('id', $orderBy, $vars, $lang->idAB);?>
           </th>
-          <th><?php common::printOrderLink('name', $orderBy, $vars, $lang->approve->name);?></th>
+          <th class='w-420px'><?php common::printOrderLink('name', $orderBy, $vars, $lang->approve->name);?></th>
+          <th class='w-420px text-center'><?php common::printOrderLink('productName', $orderBy, $vars, $lang->approve->productName);?></th>
           <th><?php common::printOrderLink('type', $orderBy, $vars, $lang->approve->type);?></th>
-          <th><?php common::printOrderLink('begin', $orderBy, $vars, $lang->approve->begin);?></th>
-          <th><?php common::printOrderLink('end', $orderBy, $vars, $lang->approve->end);?></th>
+          <th><?php common::printOrderLink('openedDate', $orderBy, $vars, $lang->approve->openedDate);?></th>
+          <th><?php common::printOrderLink('closedDate', $orderBy, $vars, $lang->approve->closedDate);?></th>
           <th><?php common::printOrderLink('openedBy', $orderBy, $vars, $lang->approve->openedBy);?></th>
-          <th><?php common::printOrderLink('assignedTo', $orderBy, $vars, $lang->approve->assignedTo);?></th>
-          <th><?php common::printOrderLink('PM', $orderBy, $vars, $lang->approve->PM);?></th>
+          <th><?php common::printOrderLink('PO', $orderBy, $vars, $lang->approve->productManager);?></th>
           <th><?php common::printOrderLink('LD', $orderBy, $vars, $lang->approve->LD);?></th>
           <th><?php common::printOrderLink('status', $orderBy, $vars, $lang->approve->status);?></th>
+          <th><?php common::printOrderLink('assignedTo', $orderBy, $vars, $lang->approve->assignedTo);?></th>
           <th><?php echo $lang->approve->operator?></th>
         </tr>
       </thead>
@@ -72,17 +73,18 @@
             echo html::a($this->createLink('project', 'view', 'project=' . $project->project), $project->projectName);
             ?>
           </td>
-          <td><?php echo $lang->approve->typeList[$project->type];?></td>
-          <td><?php echo $project->begin;?></td>
-          <td><?php echo $project->end;?></td>
+          <td class='text-center'><?php echo $project->productName;?></td>
+          <td class='w-110px'><?php echo $lang->approve->typeList[$project->type];?></td>
+          <td><?php echo $project->openedDate;?></td>
+          <td><?php echo $project->closedDate;?></td>
           <td><?php echo zget($users, $project->openedBy);?></td>
-          <td><?php echo zget($users, $project->assignedTo);?></td>
-          <td><?php echo zget($users, $project->PM);?></td>
+          <td><?php echo zget($users, $project->PO);?></td>
           <td><?php echo zget($users, $project->LD);?></td>
           <?php $projectStatus = $this->processStatus('approve', $project);?>
           <td class='c-status' title='<?php echo $projectStatus;?>'>
             <span class="status-project status-<?php echo $project->status?>"><?php echo $projectStatus;?></span>
           </td>
+          <td><?php echo zget($users, $project->assignedTo);?></td>
           <?php if($canOrder):?>
           <td class='datatable-cell c-actions'>
             <?php common::printIcon('approve', 'view',  "id=$project->id&projectId=$project->project", $project, 'list', 'eye', '', ''); ?>

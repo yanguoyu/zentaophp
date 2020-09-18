@@ -6,14 +6,14 @@ $config->approve->maxBurnDay       = '31';
 $config->approve->weekend          = '2';
 
 $config->approve->list = new stdclass();
-$config->approve->list->exportFields = 'id,name,code,PM,end,status,totalEstimate,totalConsumed,totalLeft,progress';
+$config->approve->list->exportFields = 'id,name,code,PM,PO,LD,end,status,totalEstimate,totalConsumed,totalLeft,progress';
 
 global $lang, $app;
 $app->loadLang('task');
 $config->approve->create = new stdclass();
 $config->approve->edit   = new stdclass();
-$config->approve->create->requiredFields = 'begin,end,PM,LD';
-$config->approve->edit->requiredFields   = 'begin,end,PM,LD';
+$config->approve->create->requiredFields = 'begin,end,PO,LD';
+$config->approve->edit->requiredFields   = 'begin,end,PO,LD';
 
 $config->approve->customBatchEditFields = 'days,type,teamname,status,desc,PO,QD,PM,RD';
 

@@ -22,7 +22,7 @@
         <th class="c-date"><?php echo $lang->approve->begin;?></th>
         <th class="c-date"><?php echo $lang->approve->end;?></th>
         <th><?php echo $lang->approve->status;?></th>
-        <th><?php echo $lang->approve->PM;?></th>
+        <th><?php echo $lang->approve->PO;?></th>
         <th><?php echo $lang->approve->LD;?></th>
       </tr>
     </thead>
@@ -43,7 +43,7 @@
         <td class="c-date"><?php echo $approve->begin;?></td>
         <td class="c-date"><?php echo $approve->end;?></td>
         <td><?php echo $lang->approve->statusList[$approve->status]?></td>
-        <th><?php echo zget($users, $approve->PM);?></th>
+        <th><?php echo zget($users, $approve->PO);?></th>
         <th><?php echo zget($users, $approve->LD);?></th>
      </tr>
      <?php endforeach;?>
