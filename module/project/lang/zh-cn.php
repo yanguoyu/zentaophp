@@ -121,6 +121,7 @@ $lang->project->statusList['wait']      = '未开始';
 $lang->project->statusList['doing']     = '进行中';
 $lang->project->statusList['suspended'] = '已暂停';
 $lang->project->statusList['canceled']  = '已取消';
+$lang->project->statusList['waittest']  = '待验收';
 $lang->project->statusList['closed']    = '内部验收';
 $lang->project->statusList['delayed']   = '已延期';
 
@@ -361,6 +362,7 @@ $lang->project->featureBar['all']['wait']      = $lang->project->statusList['wai
 $lang->project->featureBar['all']['doing']     = $lang->project->statusList['doing'];
 $lang->project->featureBar['all']['suspended'] = $lang->project->statusList['suspended'];
 $lang->project->featureBar['all']['canceled']  = $lang->project->statusList['canceled'];
+$lang->project->featureBar['all']['waittest']  = $lang->project->statusList['waittest'];
 $lang->project->featureBar['all']['closed']    = $lang->project->statusList['closed'];
 $lang->project->featureBar['all']['delayed']   = $lang->project->statusList['delayed'];
 

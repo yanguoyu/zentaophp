@@ -138,6 +138,10 @@
           </td>
         </tr>
         <tr>
+          <th><?php echo $lang->files;?></th>
+          <td colspan='3'><?php echo $this->fetch('file', 'buildform');?></td>
+        </tr>
+        <tr>
           <th><?php echo $lang->project->desc;?></th>
           <td colspan='3'>
             <?php echo $this->fetch('user', 'ajaxPrintTemplates', 'type=project&link=desc');?>

@@ -59,6 +59,10 @@
           <th><?php echo $lang->project->status;?></th>
           <td><?php echo html::hidden('status', $project->status);?></td>
         </tr>
+        <tr>
+          <th><?php echo $lang->files;?></th>
+          <td colspan='3'><?php echo $this->fetch('file', 'buildform');?></td>
+        </tr>
         <?php $this->printExtendFields($project, 'table', 'columns=3');?>
         <tr>
           <th><?php echo $lang->comment;?></th>

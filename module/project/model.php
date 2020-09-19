@@ -278,7 +278,7 @@ class projectModel extends model
             ->setDefault('team', substr($this->post->name,0, 30))
             ->join('whitelist', ',')
             ->stripTags($this->config->project->editor->create['id'], $this->config->allowedTags)
-            ->remove('products, workDays, delta, branch, uid, plans')
+            ->remove('products, workDays, delta, branch, uid, plans,labels,files')
             ->get();
         $project = $this->loadModel('file')->processImgURL($project, $this->config->project->editor->create['id'], $this->post->uid);
         $project->willEnd = $project->end;
@@ -296,6 +296,9 @@ class projectModel extends model
         if(!dao::isError())
         {
             $projectID     = $this->dao->lastInsertId();
+            $this->loadModel('file');
+            $this->file->saveUpload('project', $projectID);
+
             $today         = helper::today();
             $creatorExists = false;
 
@@ -655,15 +658,18 @@ class projectModel extends model
 
         $oldProject = $this->getById($projectID);
         $now        = helper::now();
-        $project = fixer::input('post')->remove('comment')->get();
+        $project = fixer::input('post')->remove('comment,labels,files')->get();
 
         $this->dao->update(TABLE_PROJECT)->data($project)
             ->check('begin', 'notempty') 
             ->check('end', 'notempty')
             ->where('id')->eq((int)$projectID)
             ->exec();
-
-        if(!dao::isError()) return common::createChanges($oldProject, $project);
+        $this->loadModel('file');
+        $this->file->saveUpload('project', $projectID);
+        if(!dao::isError()) {
+            return common::createChanges($oldProject, $project);
+        }
     }
 
     /**
@@ -787,7 +793,7 @@ class projectModel extends model
             ->setDefault('status', 'closed')
             ->setDefault('closedBy', $this->app->user->account)
             ->setDefault('closedDate', $now)
-            ->remove('comment')
+            ->remove('comment,labels,files')
             ->get();
 
         $this->dao->update(TABLE_PROJECT)->data($project)
@@ -796,6 +802,7 @@ class projectModel extends model
             ->exec();
         if(!dao::isError())
         {
+            $this->loadModel('file')->saveUpload('project', $projectID);
             $this->loadModel('score')->create('project', 'close', $oldProject);
             return common::createChanges($oldProject, $project);
         }
@@ -876,9 +883,10 @@ class projectModel extends model
                 ->beginIF($isSprint == false)->andWhere('t2.type')->notIN('sprint,waterfall')->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('t2.status')->notIN('done,closed,suspended')->fi()
+                ->beginIF($status == 'waittest')->andWhere('t2.status')->eq('doing')->fi()
                 ->beginIF($status == 'undone')->andWhere('t2.status')->notIN('done,closed')->fi()
                 ->beginIF($branch)->andWhere('t1.branch')->eq($branch)->fi()
-                ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed')->andWhere('status')->in($status)->fi()
+                ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed' and $status != 'waittest')->andWhere('status')->in($status)->fi()
                 ->beginIF(!$this->app->user->admin)->andWhere('t2.id')->in($this->app->user->view->projects)->fi()
                 ->orderBy('order_desc')
                 ->beginIF($limit)->limit($limit)->fi()
@@ -887,12 +895,13 @@ class projectModel extends model
         else
         {
             return $this->dao->select('*, IF(INSTR(" done,closed", status) < 2, 0, 1) AS isDone')->from(TABLE_PROJECT)->where('iscat')->eq(0)
+                ->beginIF($status == 'waittest')->andWhere('status')->eq('doing')->fi()
                 ->beginIF($status == 'undone')->andWhere('status')->notIN('done,closed')->fi()
                 ->beginIF($isSprint == true)->andWhere('type')->IN('sprint,waterfall')->fi()	
                 ->beginIF($isSprint == false)->andWhere('type')->notIN('sprint,waterfall')->fi()
                 ->beginIF($status == 'delayed')->andWhere('end')->lt($today)->fi()
                 ->beginIF($status == 'delayed')->andWhere('status')->notIN('done,closed,suspended')->fi()
-                ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed')->andWhere('status')->in($status)->fi()
+                ->beginIF($status != 'all' and $status != 'undone' and $status != 'delayed' and $status != 'waittest')->andWhere('status')->in($status)->fi()
                 ->beginIF(!$this->app->user->admin)->andWhere('id')->in($this->app->user->view->projects)->fi()
                 ->andWhere('deleted')->eq(0)
                 ->orderBy('order_desc')
@@ -1089,6 +1098,15 @@ class projectModel extends model
 
             /* Process the hours. */
             $project->hours = isset($hours[$project->id]) ? $hours[$project->id] : (object)$emptyHour;
+            if (isset($hours[$project->id]) and $hours[$project->id]->progress >= 100 && $project->status != 'closed') {
+                $project->status = 'waittest';
+            }
+            if ($project->status == 'waittest' and $status != 'waittest' and $status != 'all') {
+                continue;
+            }
+            if ($project->status != 'waittest' and $status == 'waittest') {
+                continue;
+            }
 
             $stats[] = $project;
         }
