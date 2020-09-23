@@ -399,7 +399,7 @@ class approveModel extends model
      * @access public
      * @return array
      */
-    public function getList($status = 'all', $limit = 0, $projectID, $productID = 0, $branch = 0, $isSprint = null)
+    public function getList($status = 'all', $limit = 0, $projectID, $productID = 0, $branch = 0, $type = 'all')
     {
         if($productID != 0)
         {
@@ -408,6 +408,7 @@ class approveModel extends model
                 ->leftjoin(TABLE_PRODUCT)->alias('t3')->on('t1.product = t3.id')
                 ->where('t1.product')->eq($productID)
                 ->beginIf($projectID != 0)->andWhere('t1.project')->eq($projectID)->fi()
+                ->beginIf($type != 'all')->andWhere('t2.type')->eq($type)->fi()
                 ->andWhere('t2.deleted')->eq(0)
                 ->andWhere('t2.iscat')->eq(0)
                 ->beginIf($status == 'assignedTo')->andWhere('t2.assignedTo')->eq($this->app->user->account)->fi()
@@ -426,6 +427,7 @@ class approveModel extends model
                 ->beginIf($status == 'assignedTo')->andWhere('assignedTo')->eq($this->app->user->account)->fi()
                 ->beginIf($status != 'all' and  $status != 'assignedTo')->andWhere('status')->eq($status)->fi()
                 ->beginIF(!$this->app->user->admin)->andWhere('id')->in($this->app->user->view->projects)->fi()
+                ->beginIf($type != 'all')->andWhere('type')->eq($type)->fi()
                 ->andWhere('deleted')->eq(0)
                 ->orderBy('order_desc')
                 ->beginIF($limit)->limit($limit)->fi()
@@ -477,10 +479,10 @@ class approveModel extends model
      * @access public
      * @return void
      */
-    public function getApproveStats($status = 'all', $projectID = 0, $productID = 0, $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null)
+    public function getApproveStats($status = 'all', $projectID = 0, $productID = 0, $type = 'all', $branch = 0, $itemCounts = 30, $orderBy = 'order_desc', $pager = null)
     {
         /* Init vars. */
-        $approves = $this->getList($status, 0, $projectID, $productID, $branch);
+        $approves = $this->getList($status, 0, $projectID, $productID, $branch, $type);
         $approves = $this->dao->select('t1.*, t2.name as projectName,t4.name as productName')->from(TABLE_APPROVE)->alias('t1')
             ->leftJoin(TABLE_PROJECT)->alias('t2')->on('t1.project = t2.id')
             ->leftjoin(TABLE_PROJECTPRODUCT)->alias('t3')->on('t2.id = t3.project')

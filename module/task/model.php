@@ -2573,7 +2573,7 @@ class taskModel extends model
     public static function isClickable($task, $action)
     {
         $action = strtolower($action);
-        $isProjectStart = $task->projectStatus !== 'wait' and $task->projectStatus !== 'noconfirm';
+        $isProjectStart = ($task->projectStatus !== 'wait' and $task->projectStatus !== 'noconfirm');
 
         if($action == 'start'          and !empty($task->children)) return $isProjectStart;
         if($action == 'finish'         and !empty($task->children)) return $isProjectStart;

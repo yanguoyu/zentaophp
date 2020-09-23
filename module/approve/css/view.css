@@ -10,6 +10,5 @@
 
 .block-dynamic .panel-body {height: 230px; overflow: auto; position: relative;}
 .block-team div.col-xs-6{white-space: nowrap; overflow: hidden;}
-#subNavbar .nav {
-    left: -270px !important;
-}
+#subNavbar .nav {left: -270px !important;}
+.kindeditor-disabled .ke-container { border-color: #ccc !important; box-shadow: none !important; cursor: not-allowed !important;}

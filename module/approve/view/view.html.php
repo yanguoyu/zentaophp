@@ -54,7 +54,7 @@
               </tr>
               <tr>
                 <th><?php echo $lang->approve->desc;?></th>
-                <td colspan='3'>
+                <td colspan='3' class='kindeditor-disabled'>
                   <?php echo html::textarea('desc', $approve->desc, "rows='6' class='form-control kindeditor' hidefocus='true' disabled");?>
                 </td>
               </tr>

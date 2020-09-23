@@ -18,12 +18,15 @@
     <?php endforeach;?>
     <?php if($projectID == 0):?>
       <div class='input-control space w-180px'>
-        <?php echo html::select('product', $products, $productID, "class='chosen form-control' onchange='byProduct(this.value, $projectID, \"$status\")'");?>
+        <?php echo html::select('product', $products, $productID, "class='chosen form-control' onchange='groupBy(this.value, \"$type\", $projectID, \"$status\")'");?>
+      </div>
+      <div class='input-control space w-180px'>
+        <?php echo html::select('type', $lang->approve->typeSelectList, $type, "class='chosen form-control' onchange='groupBy($productID, this.value, $projectID, \"$status\")'");?>
       </div>
     <?php endif;?>
   </div>
   <div class='btn-toolbar pull-right'>
-    <?php common::printLink('approve', 'export', "status=$status&productID=$productID&orderBy=$orderBy", "<i class='icon-export muted'> </i>" . $lang->export, '', "class='btn btn-link export'")?>
+    <?php common::printLink('approve', 'export', "status=$status&projectID=$projectID&productID=$productID&type=$type&orderBy=$orderBy", "<i class='icon-export muted'> </i>" . $lang->export, '', "class='btn btn-link export'")?>
     <?php if($projectID != 0):?>
       <?php common::printLink('approve', 'create', "projectId=$projectID", "<i class='icon-plus'></i> " . $lang->approve->create, '', "class='btn btn-primary' $disabledCreate")?>
     <?php endif;?>

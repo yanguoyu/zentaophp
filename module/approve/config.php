@@ -6,7 +6,7 @@ $config->approve->maxBurnDay       = '31';
 $config->approve->weekend          = '2';
 
 $config->approve->list = new stdclass();
-$config->approve->list->exportFields = 'id,name,code,PM,PO,LD,end,status,totalEstimate,totalConsumed,totalLeft,progress';
+$config->approve->list->exportFields = 'id,projectName,productName,type,openedDate,startDate,closedDate,openedBy,PO,LD,status,assignedTo';
 
 global $lang, $app;
 $app->loadLang('task');
@@ -31,7 +31,7 @@ $config->approve->editor->close    = array('id' => 'comment', 'tools' => 'simple
 $config->approve->editor->start    = array('id' => 'comment', 'tools' => 'simpleTools');
 $config->approve->editor->suspend  = array('id' => 'comment', 'tools' => 'simpleTools');
 $config->approve->editor->tree     = array('id' => 'comment', 'tools' => 'simpleTools');
-$config->approve->editor->view     = array('id' => 'desc,comment,lastComment', 'tools' => 'simpleTools');
+$config->approve->editor->view     = array('id' => 'desc,comment,lastComment', 'tools' => 'simpleTools', 'readonly' => 'TRUE');
 $config->approve->editor->approve  = array('id' => 'comment', 'tools' => 'simpleTools');
 
 $config->approve->search['module']                   = 'task';

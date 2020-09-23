@@ -310,7 +310,7 @@ class approve extends control
      * @access public
      * @return void
      */
-    public function all($status = 'all', $projectID = 0, $orderBy = 'order_desc', $productID = 0, $recTotal = 0, $recPerPage = 10, $pageID = 1)
+    public function all($status = 'all', $projectID = 0, $orderBy = 'order_desc', $productID = 0, $type = 'all', $recTotal = 0, $recPerPage = 10, $pageID = 1)
     {
         if($this->projects)
         {
@@ -325,7 +325,7 @@ class approve extends control
         $this->app->loadLang('my');
         $this->view->title         = $this->lang->approve->allProject;
         $this->view->position[]    = $this->lang->approve->allProject;
-        $this->view->approveStats  = $this->approve->getApproveStats($status, $projectID, $productID, 0, 30, $orderBy, $pager);
+        $this->view->approveStats  = $this->approve->getApproveStats($status, $projectID, $productID, $type, 0, 30, $orderBy, $pager);
         $this->view->products      = array(0 => $this->lang->product->select) + $this->loadModel('product')->getPairs();
         $this->view->productID     = $productID;
         $this->view->projectID     = $projectID;
@@ -333,6 +333,7 @@ class approve extends control
         $this->view->orderBy       = $orderBy;
         $this->view->users         = $this->loadModel('user')->getPairs('noletter');
         $this->view->status        = $status;
+        $this->view->type          = $type;
         foreach($this->view->approveStats as $id => $approve) {
             if ($approve->status != 'finish') {
                 $this->view->disabledCreate = "disabled";
@@ -373,44 +374,45 @@ class approve extends control
      * @access public
      * @return void
      */
-    public function export($status, $projectID = 0, $productID, $orderBy, $allstatus)
+    public function export($status, $projectID = 0, $productID, $type, $orderBy)
     {
         if($_POST)
         {
-            $projectLang   = $this->lang->approve;
-            $projectConfig = $this->config->project;
+            $approveLang   = $this->lang->approve;
+            $approveConfig = $this->config->approve;
 
             /* Create field lists. */
-            $fields = $this->post->exportFields ? $this->post->exportFields : explode(',', $projectConfig->list->exportFields);
+            $fields = $this->post->exportFields ? $this->post->exportFields : explode(',', $approveConfig->list->exportFields);
             foreach($fields as $key => $fieldName)
             {
                 $fieldName = trim($fieldName);
-                $fields[$fieldName] = zget($projectLang, $fieldName);
+                $fields[$fieldName] = zget($approveLang, $fieldName);
                 unset($fields[$key]);
             }
 
-            $approveStats = $this->approve->getApproveStats($status == 'byproduct' ? 'all' : $status, $projectID, $productID, 0, 30, $orderBy, null, $allstatus === 'allsprint');
+            $approveStats = $this->approve->getApproveStats($status == 'byproduct' ? 'all' : $status, $projectID, $productID, $type, 0, 30, $orderBy, null);
             $users        = $this->loadModel('user')->getPairs('noletter');
-            foreach($approveStats as $i => $project)
+            foreach($approveStats as $i => $approve)
             {
-                $project->PM            = zget($users, $project->PM);
-                $project->status        = isset($project->delay) ? $projectLang->delayed : $this->processStatus('project', $project);
-                $project->totalEstimate = $project->hours->totalEstimate;
-                $project->totalConsumed = $project->hours->totalConsumed;
-                $project->totalLeft     = $project->hours->totalLeft;
-                $project->progress      = $project->hours->progress . '%';
-
+                $approve->openedBy      = zget($users, $approve->openedBy);
+                $approve->assignedTo    = zget($users, $approve->assignedTo);
+                $approve->PO            = zget($users, $approve->PO);
+                $approve->LD            = zget($users, $approve->LD);
+                $approve->status        = zget($approveLang->statusList, $approve->status);
+                $approve->type          = zget($approveLang->typeList, $approve->type);
+                $approve->openedDate    = formatTime($approve->openedDate, 'Y-m-d');
+                $approve->startDate     = formatTime($approve->startDate, 'Y-m-d');
+                $approve->closedDate    = formatTime($approve->closedDate, 'Y-m-d');
                 if($this->post->exportType == 'selected')
                 {
                     $checkedItem = $this->cookie->checkedItem;
-                    if(strpos(",$checkedItem,", ",{$project->id},") === false) unset($approveStats[$i]);
+                    if(strpos(",$checkedItem,", ",{$approve->id},") === false) unset($approveStats[$i]);
                 }
             }
             if(isset($this->config->bizVersion)) list($fields, $approveStats) = $this->loadModel('workflowfield')->appendDataFromFlow($fields, $approveStats);
-
             $this->post->set('fields', $fields);
             $this->post->set('rows', $approveStats);
-            $this->post->set('kind', 'project');
+            $this->post->set('kind', 'approve');
             $this->fetch('file', 'export2' . $this->post->fileType, $_POST);
         }
 

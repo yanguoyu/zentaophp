@@ -8,7 +8,7 @@ $(function()
     });
 });
 
-function byProduct(productID, projectID, status)
+function groupBy(productID, type, projectID, status)
 {
-    location.href = createLink('approve', 'all', "status=" + status + "&project=" + projectID + "&orderBy=" + orderBy + '&productID=' + productID);
+    location.href = createLink('approve', 'all', "status=" + status + "&project=" + projectID + "&orderBy=" + orderBy + '&productID=' + productID + '&type=' + type);
 }
