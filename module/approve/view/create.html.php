@@ -45,6 +45,12 @@
           <th class='w-120px'><?php echo $lang->approve->name;?></th>
           <td class="col-main"><?php echo html::input('name', $project->name, "class='form-control' required disabled");?></td>
         </tr>
+        <tr class='hide'>
+          <th><?php echo $lang->approve->name;?></th>
+          <td><?php echo html::hidden('name', $project->name);?></td>
+          <td></td>
+          <td></td>
+        </tr>
         <tr>
           <th><?php echo $lang->approve->type;?></th>
           <td><?php echo html::select('type', $lang->approve->typeList, $type, "class='form-control' disabled");?></td>

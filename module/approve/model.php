@@ -216,7 +216,6 @@ class approveModel extends model
             ->setDefault('approveStep', 'PO')
             ->setDefault('assignedDate', helper::now())
             ->setDefault('openedVersion', $this->config->version)
-            ->setDefault('team', substr($this->post->name,0, 30))
             ->join('whitelist', ',')
             ->stripTags($this->config->approve->editor->create['id'], $this->config->allowedTags)
             ->remove('save,delta,startAction')
@@ -309,6 +308,7 @@ class approveModel extends model
             $assignedTo = $oldApprove->LD;
         }
         $approve = fixer::input('post')
+            ->setIF($assignedTo == null, 'closedDate', helper::now())
             ->setForce('status', $status)
             ->setForce('assignedTo', $assignedTo)
             ->setForce('approveStep', $approveStep)
@@ -338,9 +338,10 @@ class approveModel extends model
     {
         $oldApprove = $this->getApproveById($approveId);
         $approve = fixer::input('post')
-            ->setDefault('startDate', helper::now())
+            ->setIF(!$oldApprove->startDate, 'startDate', helper::now())
             ->setDefault('assignedTo', $oldApprove->PO)
             ->setDefault('assignedDate', helper::now())
+            ->setDefault('approveStep', 'PO')
             ->setDefault('status', 'doing')
             ->remove('comment')->get();
 

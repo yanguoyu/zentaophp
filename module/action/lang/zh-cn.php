@@ -87,6 +87,7 @@ $lang->action->objectTypes['caselib']     = '用例库';
 $lang->action->objectTypes['testreport']  = '报告';
 $lang->action->objectTypes['entry']       = '应用';
 $lang->action->objectTypes['webhook']     = 'Webhook';
+$lang->action->objectTypes['approve']     = '审批';
 
 /* 用来描述操作历史记录。*/
 $lang->action->desc = new stdclass();
@@ -153,6 +154,9 @@ $lang->action->desc->unlinkrelatedcase = '$date, 由 <strong>$actor</strong> 移
 /* 用来显示动态信息。*/
 $lang->action->label = new stdclass();
 $lang->action->label->changewillend       = '修改预计完成时间';
+$lang->action->label->startedapprove      = '发起';
+$lang->action->label->approvepass         = '通过';
+$lang->action->label->approveback         = '驳回';
 $lang->action->label->confirm             = '确认';
 $lang->action->label->created             = '创建';
 $lang->action->label->opened              = '创建';

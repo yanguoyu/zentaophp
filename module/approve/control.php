@@ -105,7 +105,7 @@ class approve extends control
             if(dao::isError()) $this->send(array('result' => 'fail', 'message' => dao::getError()));
             if($approveId == '') $this->send(array('result' => 'fail', 'message' => '保存失败'));
 
-            $this->loadModel('action')->create('approve', $approveId, 'opened', '', join(',', $_POST['products']));
+            $this->loadModel('action')->create('approve', $approveId, isset($_POST['save']) ? 'created' : 'startedapprove', '', join(',', $_POST['products']));
 
             $this->executeHooks($approveId);
 
@@ -140,7 +140,7 @@ class approve extends control
     public function edit($approveId, $action = 'edit', $extra = '')
     {
         $approve   = $this->approve->getApproveById($approveId);
-        $projectID = $approveId->project;
+        $projectID = $approve->project;
         $project  = $this->approve->getById($projectID);
         $browseProjectLink = $this->createLink('project', 'browse', "projectID=$projectID");
         if(!empty($_POST))
