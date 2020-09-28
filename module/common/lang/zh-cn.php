@@ -265,6 +265,7 @@ $lang->approve = new stdclass();
 $lang->approve->menu = new stdclass();
 
 $lang->approve->menu->view    = array('link' => '任务审批列表|approve|list|all=all&projectID=%s');
+$lang->approve->menu->doc     = array('link' => '文档|doc|objectLibs|type=project&projectID=%s&from=approve', 'subModule' => 'doc');
 
 
 $lang->task  = new stdclass();
