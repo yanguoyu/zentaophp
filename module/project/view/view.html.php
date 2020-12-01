@@ -160,7 +160,7 @@
                 common::printIcon('project', 'confirm',    "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
               } else if ($project->status !=='wait'and $project->status !=='closed' and $project->status !=='canceled'){
                 common::printIcon('project', 'changewillend',    "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
-                  }
+              }
               common::printIcon('project', 'start',    "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
               common::printIcon('project', 'activate', "projectID=$project->id", $project, 'button', '', '', 'iframe', true);
               common::printIcon('project', 'putoff',   "projectID=$project->id", $project, 'button', '', '', 'iframe', true);

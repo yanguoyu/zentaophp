@@ -213,6 +213,7 @@ $lang->doclib->create['custom']  = '创建自定义文档库';
 
 $lang->doclib->main['product'] = $lang->productCommon . '主库';
 $lang->doclib->main['project'] = $lang->projectCommon . '主库';
+$lang->doclib->main['approve'] = $lang->approveCommon . '主库';
 
 $lang->doclib->tabList['product'] = $lang->productCommon;
 $lang->doclib->tabList['project'] = $lang->projectCommon;

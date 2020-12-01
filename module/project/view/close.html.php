@@ -35,6 +35,10 @@
           <td><?php echo html::textarea('comment', '', "rows='6' class='form-control kindeditor' hidefocus='true' required");?></td>
         </tr>
         <tr>
+          <th><?php echo $lang->files;?></th>
+          <td colspan='1'><?php echo $this->fetch('file', 'buildform');?></td>
+        </tr>
+        <tr>
           <td class='text-center form-actions' colspan='2'><?php echo html::submitButton() . html::linkButton($lang->goback, $this->session->taskList, 'self', '', 'btn btn-wide'); ?></td>
         </tr>
       </tbody>

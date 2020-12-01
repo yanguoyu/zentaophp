@@ -127,6 +127,7 @@ class router extends baseRouter
 
             $productCommon = $storyCommon = $hourCommon = 0;
             $projectCommon = empty($this->config->isINT) ? 0 : 1;
+            $approveCommon = 0;
 
             foreach($commonSettins as $setting)
             {
@@ -140,6 +141,7 @@ class router extends baseRouter
             $lang->projectCommon = isset($this->config->projectCommonList[$this->clientLang][(int)$projectCommon]) ? $this->config->projectCommonList[$this->clientLang][(int)$projectCommon] : $this->config->projectCommonList['en'][(int)$projectCommon];
             $lang->storyCommon   = isset($this->config->storyCommonList[$this->clientLang][(int)$storyCommon])     ? $this->config->storyCommonList[$this->clientLang][(int)$storyCommon]     : $this->config->storyCommonList['en'][(int)$storyCommon];
             $lang->hourCommon    = isset($this->config->hourPointCommonList[$this->clientLang][(int)$hourCommon])  ? $this->config->hourPointCommonList[$this->clientLang][(int)$hourCommon]  : $this->config->hourPointCommonList['en'][(int)$hourCommon];
+            $lang->approveCommon = isset($this->config->approveCommonList[$this->clientLang][(int)$approveCommon])  ? $this->config->approveCommonList[$this->clientLang][(int)$approveCommon]  : $this->config->approveCommonList['en'][(int)$approveCommon];
         }
 
         parent::loadLang($moduleName, $appName);

@@ -93,9 +93,15 @@ $uid = uniqid('');
 
         try
         {
+            if (editor && editor.readonly === 'TRUE') {
+                options.bodyClass = 'article-content disabled-article-content';
+            }
             var keditor = K.create('#' + editorID, options);
             window.editor['#'] = window.editor[editorID] = keditor;
             $editor.data('keditor', keditor);
+            if (editor && editor.readonly === 'TRUE' && keditor) {
+                keditor.readonly();
+            }
             return keditor;
         }
         catch(e){return false;}

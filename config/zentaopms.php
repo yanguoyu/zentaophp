@@ -27,7 +27,7 @@ $config->duplicateTime = 60;
 
 /* Product common list. */
 $config->productCommonList['zh-cn'][0] = '产品';
-$config->productCommonList['zh-cn'][1] = '项目';
+$config->productCommonList['zh-cn'][1] = '任务';
 
 $config->productCommonList['zh-tw'][0] = '產品';
 $config->productCommonList['zh-tw'][1] = '項目';
@@ -42,7 +42,7 @@ $config->productCommonList['fr'][0] = 'Product';
 $config->productCommonList['fr'][1] = 'Projet';
 
 /* Project common list. */
-$config->projectCommonList['zh-cn'][0] = '项目';
+$config->projectCommonList['zh-cn'][0] = '任务';
 $config->projectCommonList['zh-cn'][1] = '迭代';
 $config->projectCommonList['zh-cn'][2] = '冲刺';
 
@@ -57,10 +57,18 @@ $config->projectCommonList['en'][2] = 'Sprint';
 $config->projectCommonList['de'][0] = 'Projekt';
 $config->projectCommonList['de'][1] = 'Iteration';
 $config->projectCommonList['de'][2] = 'Sprint';
+$config->projectCommonList['de'][3] = 'Approve';
 
 $config->projectCommonList['fr'][0] = 'Projet';
 $config->projectCommonList['fr'][1] = 'Iteration';
 $config->projectCommonList['fr'][2] = 'Sprint';
+
+
+/* Approve common list. */
+$config->approveCommonList['zh-cn'][0] = '审批';
+$config->approveCommonList['zh-tw'][0] = '审批';
+$config->approveCommonList['en'][0] = 'Approve';
+$config->approveCommonList['fr'][0] = 'Approve';
 
 /* Story common list. */
 $config->storyCommonList['zh-cn'][0] = '需求';
@@ -138,6 +146,7 @@ define('TABLE_STORYSTAGE',    '`' . $config->db->prefix . 'storystage`');
 define('TABLE_PRODUCTPLAN',   '`' . $config->db->prefix . 'productplan`');
 define('TABLE_RELEASE',       '`' . $config->db->prefix . 'release`');
 
+define('TABLE_APPROVE',       '`' . $config->db->prefix . 'approve`');
 define('TABLE_PROJECT',       '`' . $config->db->prefix . 'project`');
 define('TABLE_TASK',          '`' . $config->db->prefix . 'task`');
 define('TABLE_TEAM',          '`' . $config->db->prefix . 'team`');
@@ -194,3 +203,4 @@ $config->objectTables['module']      = TABLE_MODULE;
 $config->objectTables['caselib']     = TABLE_TESTSUITE;
 $config->objectTables['entry']       = TABLE_ENTRY;
 $config->objectTables['webhook']     = TABLE_WEBHOOK;
+$config->objectTables['approve']     = TABLE_APPROVE;
